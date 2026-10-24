@@ -7,7 +7,7 @@ databases:
 services:
   - type: web
     name: nerds-backend
-    runtime: node
+    env: node
     plan: free
     rootDir: backend
     buildCommand: npm install && npx prisma generate && npx prisma migrate deploy && npm run build
