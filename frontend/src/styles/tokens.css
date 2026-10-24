@@ -1,0 +1,149 @@
+/*
+  Studywise color system — a vivid indigo brand over a warm-neutral,
+  lavender-tinted surface, with a 9-hue accent set used for avatar chips,
+  cover tiles, and status pills. See commands/color-system.md for the
+  full rationale and usage rules.
+
+  Semantic color roles (label/background/fill hierarchy) keep the Apple
+  HIG naming convention from the base component kit, so intent survives
+  the light/dark swap instead of being baked into raw hex values.
+*/
+
+:root {
+  /* Type: SF Pro with the standard system fallback chain */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono:
+    'SF Mono', ui-monospace, 'Menlo', 'Consolas', monospace;
+
+  /* Accent set (light) — vivid tone. For fills, tints, dots, large
+     decorative surfaces (≥3:1 is enough; these are not text-safe). */
+  --color-blue: #4fa8e0;
+  --color-green: #2ecc9b;
+  --color-indigo: #4640de;
+  --color-orange: #f2994a;
+  --color-pink: #ff6f91;
+  --color-purple: #9b8afb;
+  --color-red: #ff5c5c;
+  --color-teal: #2fbfa8;
+  --color-yellow: #ffc93c;
+
+  /* Accent set — strong tone, ≥4.5:1 against both white and each hue's
+     own light tint. Use wherever the hue IS the text, or white/light
+     text sits directly on it as a solid fill (avatar initials, tile
+     letters, status labels, switch tracks). */
+  --color-blue-strong: #207cb7;
+  --color-green-strong: #1e8666;
+  --color-indigo-strong: #4640de;
+  --color-orange-strong: #b85e0d;
+  --color-pink-strong: #ed0038;
+  --color-purple-strong: #745cf9;
+  --color-red-strong: #ee0000;
+  --color-teal-strong: #218475;
+  --color-yellow-strong: #9a6f00;
+
+  /* On-dark accents — for badges/text sitting on brand-primary-dark
+     surfaces (promo cards). Lightened per-hue as needed; add more here
+     only when a new on-dark usage actually needs one. */
+  --color-pink-on-dark: #ffb8c8;
+
+  /* Semantic: label hierarchy (light) */
+  --label-primary: rgba(20, 20, 43, 0.88);
+  --label-secondary: rgba(45, 45, 80, 0.6);
+  --label-tertiary: rgba(45, 45, 80, 0.32);
+  --label-quaternary: rgba(45, 45, 80, 0.18);
+
+  /* Semantic: backgrounds (light) — cool lavender-tinted surface */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f3f4fc;
+  --bg-tertiary: #ffffff;
+  --bg-grouped-primary: #eef0fa;
+  --bg-grouped-secondary: #ffffff;
+
+  /* Semantic: fills (control backgrounds, light) */
+  --fill-primary: rgba(70, 64, 222, 0.14);
+  --fill-secondary: rgba(70, 64, 222, 0.1);
+  --fill-tertiary: rgba(98, 91, 158, 0.1);
+  --fill-quaternary: rgba(98, 91, 158, 0.06);
+
+  --separator: rgba(60, 55, 100, 0.14);
+  --separator-opaque: #e3e5f5;
+
+  /* Brand — fixed, not theme-dependent (hero/promo stay on-brand in both light and dark mode) */
+  --brand-primary: #4640de;
+  --brand-primary-dark: #2f2b9c;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.14);
+
+  /* Radii — iOS favors large, continuous corners */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
+
+  /* Motion — spring-like ease, not linear */
+  --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --duration-fast: 120ms;
+  --duration-standard: 220ms;
+}
+
+/*
+  No in-app theme toggle exists yet, so dark mode is opt-in via
+  [data-theme='dark'] only — it does NOT follow OS prefers-color-scheme.
+  Add a toggle later to actually set that attribute; until then the app
+  always renders the light palette regardless of system setting.
+*/
+
+[data-theme='dark'] {
+  --label-primary: rgba(255, 255, 255, 0.88);
+  --label-secondary: rgba(210, 208, 235, 0.62);
+  --label-tertiary: rgba(210, 208, 235, 0.32);
+  --label-quaternary: rgba(210, 208, 235, 0.16);
+
+  --bg-primary: #0f1024;
+  --bg-secondary: #15172f;
+  --bg-tertiary: #1e2140;
+  --bg-grouped-primary: #0f1024;
+  --bg-grouped-secondary: #181a37;
+
+  --fill-primary: rgba(130, 122, 255, 0.24);
+  --fill-secondary: rgba(130, 122, 255, 0.18);
+  --fill-tertiary: rgba(150, 145, 220, 0.16);
+  --fill-quaternary: rgba(150, 145, 220, 0.1);
+
+  --separator: rgba(150, 145, 220, 0.16);
+  --separator-opaque: #2b2d52;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+[data-theme='light'] {
+  --label-primary: rgba(20, 20, 43, 0.88);
+  --label-secondary: rgba(45, 45, 80, 0.6);
+  --label-tertiary: rgba(45, 45, 80, 0.32);
+  --label-quaternary: rgba(45, 45, 80, 0.18);
+
+  --bg-primary: #ffffff;
+  --bg-secondary: #f3f4fc;
+  --bg-tertiary: #ffffff;
+  --bg-grouped-primary: #eef0fa;
+  --bg-grouped-secondary: #ffffff;
+
+  --fill-primary: rgba(70, 64, 222, 0.14);
+  --fill-secondary: rgba(70, 64, 222, 0.1);
+  --fill-tertiary: rgba(98, 91, 158, 0.1);
+  --fill-quaternary: rgba(98, 91, 158, 0.06);
+
+  --separator: rgba(60, 55, 100, 0.14);
+  --separator-opaque: #e3e5f5;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.14);
+}

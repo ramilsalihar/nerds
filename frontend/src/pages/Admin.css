@@ -1,0 +1,49 @@
+.admin {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin__title {
+  font-family: var(--font-sans);
+  font-size: 24px;
+  font-weight: 650;
+  color: var(--label-primary);
+  margin: 0;
+}
+
+.admin__error {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-red-strong);
+}
+
+.admin__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.admin__amount {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.admin__amount--inflow {
+  color: var(--color-green-strong);
+}
+
+.admin__amount--outflow {
+  color: var(--label-tertiary);
+}
+
+.admin__post-note {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--label-secondary);
+  margin: 0 0 16px;
+}

@@ -1,0 +1,79 @@
+.ds-button {
+  font-family: var(--font-sans);
+  font-weight: 590;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-fast) var(--ease-standard);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ds-button:active {
+  transform: scale(0.97);
+}
+
+.ds-button:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+.ds-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Sizes */
+.ds-button--regular {
+  font-size: 17px;
+  line-height: 22px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+}
+
+.ds-button--small {
+  font-size: 15px;
+  line-height: 20px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+}
+
+/* Variants */
+.ds-button--filled {
+  background: var(--brand-primary);
+  color: #ffffff;
+}
+.ds-button--filled:hover {
+  background: color-mix(in srgb, var(--brand-primary) 90%, black);
+}
+
+.ds-button--tinted {
+  background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
+  color: var(--brand-primary);
+}
+.ds-button--tinted:hover {
+  background: color-mix(in srgb, var(--brand-primary) 22%, transparent);
+}
+
+.ds-button--plain {
+  background: transparent;
+  color: var(--brand-primary);
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.ds-button--plain:hover {
+  opacity: 0.7;
+}
+
+.ds-button--destructive {
+  background: color-mix(in srgb, var(--color-red) 15%, transparent);
+  color: var(--color-red-strong);
+}
+.ds-button--destructive:hover {
+  background: color-mix(in srgb, var(--color-red) 22%, transparent);
+}

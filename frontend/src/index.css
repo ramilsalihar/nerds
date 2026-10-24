@@ -1,0 +1,22 @@
+@import 'tailwindcss';
+@import './styles/tokens.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100svh;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--label-primary);
+  background: var(--bg-grouped-primary);
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}

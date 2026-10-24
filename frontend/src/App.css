@@ -1,0 +1,32 @@
+.app-shell {
+  display: flex;
+  gap: 16px;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 24px;
+  min-height: 100svh;
+  align-items: flex-start;
+}
+
+.app-shell__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.app-shell__content {
+  flex: 1;
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .sidebar {
+    width: 56px;
+  }
+}

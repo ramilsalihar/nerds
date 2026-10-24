@@ -1,0 +1,39 @@
+.ds-segmented {
+  position: relative;
+  display: flex;
+  background: var(--fill-tertiary);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  gap: 0;
+}
+
+.ds-segmented__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  bottom: 2px;
+  background: var(--bg-tertiary);
+  border-radius: calc(var(--radius-sm) - 2px);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-standard) var(--ease-standard);
+}
+
+.ds-segmented__item {
+  position: relative;
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 6px 12px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 590;
+  color: var(--label-primary);
+  cursor: pointer;
+  border-radius: calc(var(--radius-sm) - 2px);
+  transition: opacity var(--duration-fast) var(--ease-standard);
+  opacity: 0.6;
+}
+
+.ds-segmented__item--active {
+  opacity: 1;
+}

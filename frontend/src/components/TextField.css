@@ -1,0 +1,42 @@
+.ds-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ds-field__label {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 590;
+  color: var(--label-secondary);
+}
+
+.ds-field__input {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  color: var(--label-primary);
+  background: var(--fill-quaternary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.ds-field__input::placeholder {
+  color: var(--label-tertiary);
+}
+
+.ds-field__input:focus {
+  outline: none;
+  background: var(--bg-tertiary);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-primary) 15%, transparent);
+}
+
+.ds-field__input--textarea {
+  resize: vertical;
+  min-height: 88px;
+  line-height: 1.4;
+}

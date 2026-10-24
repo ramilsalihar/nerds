@@ -1,0 +1,123 @@
+.project-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 16px;
+  align-items: start;
+}
+
+.project-detail__main,
+.project-detail__side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.project-detail__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.project-detail__status {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--fill-secondary);
+  color: var(--label-secondary);
+}
+
+.project-detail__status--open {
+  background: color-mix(in srgb, var(--color-green-strong) 16%, transparent);
+  color: var(--color-green-strong);
+}
+
+.project-detail__status--in_progress,
+.project-detail__status--submitted {
+  background: color-mix(in srgb, var(--brand-primary) 16%, transparent);
+  color: var(--brand-primary);
+}
+
+.project-detail__status--completed {
+  background: color-mix(in srgb, var(--color-teal-strong) 16%, transparent);
+  color: var(--color-teal-strong);
+}
+
+.project-detail__status--rejected,
+.project-detail__status--disputed {
+  background: color-mix(in srgb, var(--color-red-strong) 16%, transparent);
+  color: var(--color-red-strong);
+}
+
+.project-detail__title {
+  font-family: var(--font-sans);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--label-primary);
+  margin: 0 0 6px;
+}
+
+.project-detail__budget {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 590;
+  color: var(--label-primary);
+  margin: 0 0 4px;
+}
+
+.project-detail__client,
+.project-detail__meta {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--label-secondary);
+  margin: 0 0 4px;
+}
+
+.project-detail__description {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--label-primary);
+  margin: 8px 0;
+  white-space: pre-wrap;
+}
+
+.project-detail__subhead {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--label-primary);
+  margin: 12px 0 4px;
+}
+
+.project-detail__section-title {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--label-primary);
+  margin: 0 0 12px;
+}
+
+.project-detail__error {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-red-strong);
+  margin: 8px 0 0;
+}
+
+.project-detail__row-actions {
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 860px) {
+  .project-detail {
+    grid-template-columns: 1fr;
+  }
+}
