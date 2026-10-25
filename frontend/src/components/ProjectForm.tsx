@@ -11,11 +11,12 @@ import './ProjectForm.css'
 interface ProjectFormProps {
   students: Student[]
   project?: Project
+  lockStudent?: boolean
   onSuccess?: (project: Project) => void
   onCancel?: () => void
 }
 
-export function ProjectForm({ students, project, onSuccess, onCancel }: ProjectFormProps) {
+export function ProjectForm({ students, project, lockStudent = false, onSuccess, onCancel }: ProjectFormProps) {
   const { token } = useAuth()
   const isEdit = !!project
   const [studentId, setStudentId] = useState(project?.studentId ?? students[0]?.id ?? '')
@@ -23,6 +24,8 @@ export function ProjectForm({ students, project, onSuccess, onCancel }: ProjectF
   const [description, setDescription] = useState(project?.description ?? '')
   const [repoUrl, setRepoUrl] = useState(project?.repoUrl ?? '')
   const [liveUrl, setLiveUrl] = useState(project?.liveUrl ?? '')
+  const [videoUrl, setVideoUrl] = useState(project?.videoUrl ?? '')
+  const [imageUrls, setImageUrls] = useState((project?.imageUrls ?? []).join('\n'))
   const [deployed, setDeployed] = useState(project?.deployed ?? false)
   const [usersCount, setUsersCount] = useState(String(project?.usersCount ?? 0))
   const [revenueAmount, setRevenueAmount] = useState(String(project?.revenueAmount ?? 0))
@@ -37,11 +40,16 @@ export function ProjectForm({ students, project, onSuccess, onCancel }: ProjectF
     setSubmitting(true)
     try {
       const body = {
-        studentId,
+        studentId: lockStudent ? undefined : studentId,
         title,
         description,
         repoUrl: repoUrl || undefined,
         liveUrl: liveUrl || undefined,
+        videoUrl: videoUrl || undefined,
+        imageUrls: imageUrls
+          .split('\n')
+          .map((s) => s.trim())
+          .filter(Boolean),
         deployed,
         usersCount: Number(usersCount),
         revenueAmount: Number(revenueAmount),
@@ -57,6 +65,8 @@ export function ProjectForm({ students, project, onSuccess, onCancel }: ProjectF
         setDescription('')
         setRepoUrl('')
         setLiveUrl('')
+        setVideoUrl('')
+        setImageUrls('')
         setDeployed(false)
         setUsersCount('0')
         setRevenueAmount('0')
@@ -72,25 +82,41 @@ export function ProjectForm({ students, project, onSuccess, onCancel }: ProjectF
 
   return (
     <form className="project-form" onSubmit={handleSubmit}>
-      <div className="project-form__field">
-        <label className="project-form__label" htmlFor="studentId">
-          Student
-        </label>
-        <select id="studentId" className="project-form__select" value={studentId} onChange={(e) => setStudentId(e.target.value)} required>
-          {students.length === 0 && <option value="">No students yet — add one first</option>}
-          {students.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      {!lockStudent && (
+        <div className="project-form__field">
+          <label className="project-form__label" htmlFor="studentId">
+            Student
+          </label>
+          <select id="studentId" className="project-form__select" value={studentId} onChange={(e) => setStudentId(e.target.value)} required>
+            {students.length === 0 && <option value="">No students yet — add one first</option>}
+            {students.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
       <TextField id="title" label="Title" required value={title} onChange={(e) => setTitle(e.target.value)} />
       <Textarea id="description" label="Description" required value={description} onChange={(e) => setDescription(e.target.value)} />
       <div className="project-form__row">
-        <TextField id="repoUrl" label="Repo URL (optional)" type="url" value={repoUrl} onChange={(e) => setRepoUrl(e.target.value)} />
-        <TextField id="liveUrl" label="Live URL (optional)" type="url" value={liveUrl} onChange={(e) => setLiveUrl(e.target.value)} />
+        <TextField id="repoUrl" label="GitHub repo URL (optional)" type="url" value={repoUrl} onChange={(e) => setRepoUrl(e.target.value)} />
+        <TextField id="liveUrl" label="Live demo URL (optional)" type="url" value={liveUrl} onChange={(e) => setLiveUrl(e.target.value)} />
       </div>
+      <TextField
+        id="videoUrl"
+        label="Demo video link (YouTube/Loom, optional)"
+        type="url"
+        value={videoUrl}
+        onChange={(e) => setVideoUrl(e.target.value)}
+      />
+      <Textarea
+        id="imageUrls"
+        label="Screenshot image URLs (one per line, optional)"
+        rows={3}
+        value={imageUrls}
+        onChange={(e) => setImageUrls(e.target.value)}
+      />
       <div className="project-form__field project-form__field--inline">
         <label className="project-form__label" htmlFor="deployed">
           Deployed

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Card, PillFilter, ProjectCard } from '../components'
 import { api } from '../lib/api'
 import { tileFor } from '../lib/color'
@@ -131,14 +132,34 @@ function PodiumSpot({
   metricLabel: string
   metricVal: string | number
 }) {
+  const navigate = useNavigate()
+
   return (
-    <a href={`/projects/${project.id}`} className={`podium__spot podium__spot--${place}`}>
+    <a
+      href={`/projects/${project.id}`}
+      className={`podium__spot podium__spot--${place}`}
+      onClick={(e) => {
+        e.preventDefault()
+        navigate(`/projects/${project.id}`)
+      }}
+    >
       <div className="podium__medal">{place === 1 ? '🥇' : place === 2 ? '🥈' : '🥉'}</div>
       <div className="podium__tile" style={tileFor(project.id)}>
         {project.title.charAt(0).toUpperCase()}
       </div>
       <h3 className="podium__title">{project.title}</h3>
-      {project.student && <p className="podium__student">by {project.student.name}</p>}
+      {project.student && (
+        <p
+          className="podium__student"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            navigate(`/students/${project.student!.id}`)
+          }}
+        >
+          by {project.student.name}
+        </p>
+      )}
       <p className="podium__score">
         {metricVal} {metricLabel.toLowerCase()}
       </p>

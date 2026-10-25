@@ -3,10 +3,13 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import { ProtectedRoute, Sidebar, Topbar } from './components'
 import { Dashboard } from './pages/Dashboard'
 import { Login } from './pages/Login'
+import { Register } from './pages/Register'
 import { ProjectDetail } from './pages/ProjectDetail'
 import { Projects } from './pages/Projects'
+import { Profile } from './pages/Profile'
 import { Settings } from './pages/Settings'
 import { Students } from './pages/Students'
+import { StudentProfile } from './pages/StudentProfile'
 import './App.css'
 
 export default function App() {
@@ -23,7 +26,17 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Dashboard search={search} />} />
             <Route path="/projects/:id" element={<ProjectDetail />} />
+            <Route path="/students/:id" element={<StudentProfile />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute roles={['student']}>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/projects"
               element={

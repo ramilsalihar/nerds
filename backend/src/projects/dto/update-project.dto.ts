@@ -1,4 +1,4 @@
-import { IsBoolean, IsNumber, IsOptional, IsString, IsUrl, Max, Min } from 'class-validator';
+import { ArrayMaxSize, IsArray, IsBoolean, IsNumber, IsOptional, IsString, IsUrl, Max, Min } from 'class-validator';
 
 export class UpdateProjectDto {
   @IsOptional()
@@ -16,6 +16,16 @@ export class UpdateProjectDto {
   @IsOptional()
   @IsUrl()
   liveUrl?: string;
+
+  @IsOptional()
+  @IsUrl()
+  videoUrl?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(8)
+  @IsUrl({}, { each: true })
+  imageUrls?: string[];
 
   @IsOptional()
   @IsBoolean()

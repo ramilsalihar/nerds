@@ -59,6 +59,27 @@
   margin: 0 0 4px;
 }
 
+.project-detail__client a {
+  color: var(--brand-primary);
+  font-weight: 590;
+  text-decoration: none;
+}
+
+.project-detail__images {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.project-detail__images img {
+  width: 160px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--separator);
+}
+
 .project-detail__description {
   font-family: var(--font-sans);
   font-size: 14px;

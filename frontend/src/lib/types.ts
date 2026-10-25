@@ -19,6 +19,8 @@ export interface Project {
   description: string
   repoUrl: string | null
   liveUrl: string | null
+  videoUrl: string | null
+  imageUrls: string[]
   deployed: boolean
   usersCount: number
   revenueAmount: string
@@ -34,13 +36,18 @@ export interface Project {
   rank?: number
 }
 
+export type StudentStatus = 'pending' | 'approved' | 'rejected'
+
 export interface Student {
   id: string
   email: string
   role: 'student'
+  status: StudentStatus
   name: string
   avatarUrl: string | null
   bio: string | null
+  className: string | null
+  graduationYear: number | null
   createdAt: string
   studentProfile?: { skills: string[]; portfolioLinks: string[] } | null
 }

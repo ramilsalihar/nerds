@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { tileFor } from '../lib/color'
 import { relativeTime } from '../lib/format'
 import type { Project } from '../lib/types'
@@ -11,6 +11,8 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, highlightLabel, highlightValue }: ProjectCardProps) {
+  const navigate = useNavigate()
+
   return (
     <Link to={`/projects/${project.id}`} className="project-card">
       <div className="project-card__top">
@@ -20,7 +22,18 @@ export function ProjectCard({ project, highlightLabel, highlightValue }: Project
         {project.rank && <span className="project-card__rank">#{project.rank}</span>}
       </div>
       <h3 className="project-card__title">{project.title}</h3>
-      {project.student && <p className="project-card__student">by {project.student.name}</p>}
+      {project.student && (
+        <p
+          className="project-card__student"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            navigate(`/students/${project.student!.id}`)
+          }}
+        >
+          by {project.student.name}
+        </p>
+      )}
       {highlightLabel && (
         <p className="project-card__headline">
           <strong>{highlightValue}</strong> {highlightLabel.toLowerCase()}

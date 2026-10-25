@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Button, Card, ProjectForm, TextField } from '../components'
 import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
@@ -30,34 +31,92 @@ export function Students() {
 
   useEffect(reload, [])
 
+  const pending = students?.filter((s) => s.status === 'pending') ?? []
+  const decided = students?.filter((s) => s.status !== 'pending') ?? []
+
   return (
     <div className="students">
       <div className="students__header">
         <h1 className="students__title">Students</h1>
-        <p className="students__subtitle">Add students and manage the project each one is connected to.</p>
+        <p className="students__subtitle">Approve new registrations and manage the project each student is connected to.</p>
       </div>
+
+      {error && <p className="students__error">{error}</p>}
+
+      {pending.length > 0 && (
+        <Card>
+          <h2 className="students__section-title">Pending approval ({pending.length})</h2>
+          <div className="students__list">
+            {pending.map((s) => (
+              <PendingRow key={s.id} student={s} onChanged={reload} />
+            ))}
+          </div>
+        </Card>
+      )}
 
       <Card>
         <h2 className="students__section-title">Add a student</h2>
         <CreateStudentForm onCreated={reload} />
       </Card>
 
-      {error && <p className="students__error">{error}</p>}
-
       <Card>
         <h2 className="students__section-title">All students</h2>
         {students === null || projects === null ? (
           <p style={{ color: 'var(--label-secondary)' }}>Loading…</p>
-        ) : students.length === 0 ? (
+        ) : decided.length === 0 ? (
           <p style={{ color: 'var(--label-secondary)' }}>No students yet — add one above.</p>
         ) : (
           <div className="students__list">
-            {students.map((s) => (
+            {decided.map((s) => (
               <StudentRow key={s.id} student={s} projects={projects.filter((p) => p.studentId === s.id)} onChanged={reload} />
             ))}
           </div>
         )}
       </Card>
+    </div>
+  )
+}
+
+function PendingRow({ student, onChanged }: { student: Student; onChanged: () => void }) {
+  const { token } = useAuth()
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function decide(action: 'approve' | 'reject') {
+    setBusy(true)
+    setError(null)
+    try {
+      await api(`/users/${student.id}/${action}`, { method: 'PATCH', token })
+      onChanged()
+    } catch (err) {
+      setError((err as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="student-row">
+      <div className="student-row__summary" style={{ cursor: 'default' }}>
+        <div className="student-row__info">
+          <span className="student-row__name">{student.name}</span>
+          <span className="student-row__email">{student.email}</span>
+          {(student.className || student.graduationYear) && (
+            <span className="student-row__skills">
+              {[student.className, student.graduationYear ? `Class of ${student.graduationYear}` : null].filter(Boolean).join(' · ')}
+            </span>
+          )}
+          {error && <span className="students__error">{error}</span>}
+        </div>
+        <div className="student-row__projects" style={{ gap: 8 }}>
+          <Button variant="filled" size="small" disabled={busy} onClick={() => decide('approve')}>
+            Approve
+          </Button>
+          <Button variant="destructive" size="small" disabled={busy} onClick={() => decide('reject')}>
+            Reject
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }
@@ -68,13 +127,25 @@ function StudentRow({ student, projects, onChanged }: { student: Student; projec
 
   return (
     <div className="student-row">
-      <button className="student-row__summary" onClick={() => setExpanded((v) => !v)}>
+      <div
+        className="student-row__summary"
+        role="button"
+        tabIndex={0}
+        onClick={() => setExpanded((v) => !v)}
+        onKeyDown={(e) => e.key === 'Enter' && setExpanded((v) => !v)}
+      >
         <div className="student-row__info">
-          <span className="student-row__name">{student.name}</span>
+          <span className="student-row__name">
+            {student.name}
+            {student.status === 'rejected' && ' · rejected'}
+          </span>
           <span className="student-row__email">{student.email}</span>
           {!!student.studentProfile?.skills.length && (
             <span className="student-row__skills">{student.studentProfile.skills.join(', ')}</span>
           )}
+          <Link to={`/students/${student.id}`} className="student-row__skills" onClick={(e) => e.stopPropagation()}>
+            View public profile ↗
+          </Link>
         </div>
         <div className="student-row__projects">
           {projects.length === 0 ? (
@@ -88,7 +159,7 @@ function StudentRow({ student, projects, onChanged }: { student: Student; projec
           )}
         </div>
         <span className={`student-row__chevron ${expanded ? 'student-row__chevron--open' : ''}`}>⌄</span>
-      </button>
+      </div>
 
       {expanded && (
         <div className="student-row__detail">

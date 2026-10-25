@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Button, Card, TextField, Textarea } from '../components'
 import { api } from '../lib/api'
 import { relativeTime } from '../lib/format'
@@ -70,12 +70,16 @@ export function ProjectDetail() {
             <span className="project-detail__meta">Added {relativeTime(project.createdAt)}</span>
           </div>
           <h1 className="project-detail__title">{project.title}</h1>
-          {project.student && <p className="project-detail__client">by {project.student.name}</p>}
+          {project.student && (
+            <p className="project-detail__client">
+              by <Link to={`/students/${project.student.id}`}>{project.student.name}</Link>
+            </p>
+          )}
           <p className="project-detail__description">{project.description}</p>
           <div className="project-detail__links">
             {project.repoUrl && (
               <a href={project.repoUrl} target="_blank" rel="noreferrer" className="project-detail__link">
-                Repo ↗
+                GitHub ↗
               </a>
             )}
             {project.liveUrl && (
@@ -83,7 +87,19 @@ export function ProjectDetail() {
                 Live demo ↗
               </a>
             )}
+            {project.videoUrl && (
+              <a href={project.videoUrl} target="_blank" rel="noreferrer" className="project-detail__link">
+                Demo video ↗
+              </a>
+            )}
           </div>
+          {project.imageUrls.length > 0 && (
+            <div className="project-detail__images">
+              {project.imageUrls.map((src) => (
+                <img key={src} src={src} alt={`${project.title} screenshot`} />
+              ))}
+            </div>
+          )}
         </Card>
 
         <Card>

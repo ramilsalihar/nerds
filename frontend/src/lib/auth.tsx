@@ -15,8 +15,17 @@ interface AuthState {
   token: string | null
 }
 
+interface RegisterInput {
+  name: string
+  email: string
+  password: string
+  className: string
+  graduationYear: number
+}
+
 interface AuthContextValue extends AuthState {
   login: (email: string, password: string) => Promise<void>
+  register: (input: RegisterInput) => Promise<{ message: string }>
   logout: () => void
 }
 
@@ -54,11 +63,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setState({ token: accessToken, user: decodeToken(accessToken) })
   }
 
+  async function register(input: RegisterInput) {
+    return api<{ message: string }>('/auth/register', { method: 'POST', body: input })
+  }
+
   function logout() {
     setState({ token: null, user: null })
   }
 
-  return <AuthContext.Provider value={{ ...state, login, logout }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ ...state, login, register, logout }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {
