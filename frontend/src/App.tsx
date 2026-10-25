@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { ProtectedRoute, Sidebar, Topbar } from './components'
-import { Admin } from './pages/Admin'
 import { Dashboard } from './pages/Dashboard'
 import { Login } from './pages/Login'
 import { ProjectDetail } from './pages/ProjectDetail'
+import { Settings } from './pages/Settings'
+import { Students } from './pages/Students'
 import './App.css'
 
 export default function App() {
@@ -23,10 +24,18 @@ export default function App() {
             <Route path="/projects/:id" element={<ProjectDetail />} />
             <Route path="/login" element={<Login />} />
             <Route
-              path="/admin"
+              path="/students"
               element={
                 <ProtectedRoute roles={['admin']}>
-                  <Admin />
+                  <Students />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute roles={['admin']}>
+                  <Settings />
                 </ProtectedRoute>
               }
             />

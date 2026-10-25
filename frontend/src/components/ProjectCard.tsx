@@ -4,7 +4,13 @@ import { relativeTime } from '../lib/format'
 import type { Project } from '../lib/types'
 import './ProjectCard.css'
 
-export function ProjectCard({ project }: { project: Project }) {
+interface ProjectCardProps {
+  project: Project
+  highlightLabel?: string
+  highlightValue?: string | number
+}
+
+export function ProjectCard({ project, highlightLabel, highlightValue }: ProjectCardProps) {
   return (
     <Link to={`/projects/${project.id}`} className="project-card">
       <div className="project-card__top">
@@ -15,7 +21,11 @@ export function ProjectCard({ project }: { project: Project }) {
       </div>
       <h3 className="project-card__title">{project.title}</h3>
       {project.student && <p className="project-card__student">by {project.student.name}</p>}
-      <p className="project-card__description">{project.description}</p>
+      {highlightLabel && (
+        <p className="project-card__headline">
+          <strong>{highlightValue}</strong> {highlightLabel.toLowerCase()}
+        </p>
+      )}
       <div className="project-card__stats">
         <span className="project-card__stat">
           <strong>{project.likeCount}</strong> likes

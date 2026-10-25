@@ -18,7 +18,16 @@ const HomeIcon = () => (
   </Icon>
 )
 
-const AdminIcon = () => (
+const StudentsIcon = () => (
+  <Icon>
+    <circle cx="9" cy="8" r="3.2" />
+    <path d="M3.5 19.5c.6-3.4 2.9-5.2 5.5-5.2s4.9 1.8 5.5 5.2" />
+    <circle cx="17.5" cy="8.5" r="2.4" />
+    <path d="M15.8 14.6c2.2.2 4 1.8 4.5 4.6" />
+  </Icon>
+)
+
+const SettingsIcon = () => (
   <Icon>
     <circle cx="12" cy="12" r="3" />
     <path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.04 1.56V19.6a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.04-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.04H2.4a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.05 8.5a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H8.5a1.7 1.7 0 0 0 1.04-1.56V2.4a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.04 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V8.5a1.7 1.7 0 0 0 1.56 1.04h.09a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.56 1.04Z" />
@@ -43,32 +52,40 @@ export function Sidebar() {
   const { user, logout } = useAuth()
 
   return (
-    <nav className="sidebar">
-      <div className="sidebar__group">
-        <div className="sidebar__logo" title="nerds">
-          n
+    <div className="sidebar-rail">
+      <nav className="sidebar">
+        <div className="sidebar__group">
+          <div className="sidebar__logo-row">
+            <div className="sidebar__logo">n</div>
+            <span className="sidebar__wordmark">nerds</span>
+          </div>
+          <SidebarLink to="/" label="Dashboard" icon={<HomeIcon />} end />
+          {user?.role === 'admin' && <SidebarLink to="/students" label="Students" icon={<StudentsIcon />} />}
+          {user?.role === 'admin' && <SidebarLink to="/settings" label="Settings" icon={<SettingsIcon />} />}
         </div>
-        <SidebarLink to="/" label="Leaderboard" icon={<HomeIcon />} end />
-        {user?.role === 'admin' && <SidebarLink to="/admin" label="Admin" icon={<AdminIcon />} />}
-      </div>
 
-      <div className="sidebar__group">
-        {user ? (
-          <button className="sidebar__item" title="Log out" onClick={logout}>
-            <LogoutIcon />
-          </button>
-        ) : (
-          <SidebarLink to="/login" label="Log in" icon={<LoginIcon />} />
-        )}
-      </div>
-    </nav>
+        <div className="sidebar__group">
+          {user ? (
+            <button className="sidebar__item" title="Log out" onClick={logout}>
+              <span className="sidebar__icon">
+                <LogoutIcon />
+              </span>
+              <span className="sidebar__label">Log out</span>
+            </button>
+          ) : (
+            <SidebarLink to="/login" label="Log in" icon={<LoginIcon />} />
+          )}
+        </div>
+      </nav>
+    </div>
   )
 }
 
 function SidebarLink({ to, label, icon, end }: { to: string; label: string; icon: ReactNode; end?: boolean }) {
   return (
     <NavLink to={to} end={end} title={label} className={({ isActive }) => `sidebar__item ${isActive ? 'sidebar__item--active' : ''}`}>
-      {icon}
+      <span className="sidebar__icon">{icon}</span>
+      <span className="sidebar__label">{label}</span>
     </NavLink>
   )
 }

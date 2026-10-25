@@ -24,7 +24,10 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 function decodeToken(token: string): User | null {
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]))
+    const base64Url = token.split('.')[1]
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=')
+    const payload = JSON.parse(decodeURIComponent(escape(atob(padded))))
     return { id: payload.sub, email: payload.email, role: payload.role, name: payload.name ?? payload.email }
   } catch {
     return null
@@ -35,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>(() => {
     const token = localStorage.getItem('token')
     const user = token ? decodeToken(token) : null
-    return { token, user }
+    return user ? { token, user } : { token: null, user: null }
   })
 
   useEffect(() => {

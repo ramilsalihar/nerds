@@ -78,6 +78,18 @@
   min-height: 2.6em;
 }
 
+.project-card__headline {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--label-secondary);
+}
+
+.project-card__headline strong {
+  font-size: 15px;
+  color: var(--brand-primary);
+}
+
 .project-card__stats {
   display: flex;
   align-items: center;
