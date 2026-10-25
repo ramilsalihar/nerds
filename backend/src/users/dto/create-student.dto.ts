@@ -1,4 +1,5 @@
-import { IsArray, IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsArray, IsEmail, IsInt, IsOptional, IsString, Min, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateStudentDto {
   @IsEmail()
@@ -14,6 +15,16 @@ export class CreateStudentDto {
   @IsOptional()
   @IsString()
   bio?: string;
+
+  @IsOptional()
+  @IsString()
+  className?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1900)
+  graduationYear?: number;
 
   @IsOptional()
   @IsArray()

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Button, Card, TextField } from '../components'
 import { useAuth } from '../lib/auth'
 import './AuthForm.css'
@@ -52,6 +52,9 @@ export function Login() {
             {submitting ? 'Logging in…' : 'Log in'}
           </Button>
         </form>
+        <p className="auth-form__switch">
+          New student? <Link to="/register">Register here</Link>
+        </p>
       </Card>
     </div>
   )

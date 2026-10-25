@@ -1,9 +1,16 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { Role } from '../generated/prisma/enums.js';
 import type { CreateProjectDto } from './dto/create-project.dto.js';
 import type { UpdateProjectDto } from './dto/update-project.dto.js';
 import type { CreateCommentDto } from './dto/create-comment.dto.js';
+
+interface AuthenticatedUser {
+  id: string;
+  email: string;
+  role: Role;
+}
 
 const STUDENT_SELECT = { select: { id: true, name: true, avatarUrl: true } };
 
@@ -59,14 +66,19 @@ export class ProjectsService {
     return { ...project, score: scoreOf(project) };
   }
 
-  create(dto: CreateProjectDto) {
+  create(dto: CreateProjectDto, user: AuthenticatedUser) {
+    const studentId = user.role === Role.admin ? dto.studentId : user.id;
+    if (!studentId) throw new BadRequestException('studentId is required');
+
     return this.prisma.project.create({
       data: {
-        studentId: dto.studentId,
+        studentId,
         title: dto.title,
         description: dto.description,
         repoUrl: dto.repoUrl,
         liveUrl: dto.liveUrl,
+        videoUrl: dto.videoUrl,
+        imageUrls: dto.imageUrls ?? [],
         deployed: dto.deployed ?? false,
         usersCount: dto.usersCount ?? 0,
         revenueAmount: dto.revenueAmount ?? 0,
@@ -77,8 +89,9 @@ export class ProjectsService {
     });
   }
 
-  async update(id: string, dto: UpdateProjectDto) {
-    await this.assertExists(id);
+  async update(id: string, dto: UpdateProjectDto, user: AuthenticatedUser) {
+    const project = await this.assertExists(id);
+    this.assertOwnership(project, user);
     return this.prisma.project.update({
       where: { id },
       data: dto,
@@ -86,14 +99,21 @@ export class ProjectsService {
     });
   }
 
-  async remove(id: string) {
-    await this.assertExists(id);
+  async remove(id: string, user: AuthenticatedUser) {
+    const project = await this.assertExists(id);
+    this.assertOwnership(project, user);
     await this.prisma.$transaction([
       this.prisma.comment.deleteMany({ where: { projectId: id } }),
       this.prisma.like.deleteMany({ where: { projectId: id } }),
       this.prisma.project.delete({ where: { id } }),
     ]);
     return { id };
+  }
+
+  private assertOwnership(project: { studentId: string }, user: AuthenticatedUser) {
+    if (user.role !== Role.admin && project.studentId !== user.id) {
+      throw new ForbiddenException('You can only manage your own project');
+    }
   }
 
   async toggleLike(projectId: string, viewerToken: string) {

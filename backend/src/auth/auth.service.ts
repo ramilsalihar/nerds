@@ -1,8 +1,8 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { Role } from '../generated/prisma/enums.js';
+import { Role, UserStatus } from '../generated/prisma/enums.js';
 import type { RegisterDto } from './dto/register.dto.js';
 import type { LoginDto } from './dto/login.dto.js';
 
@@ -20,22 +20,34 @@ export class AuthService {
     }
 
     const passwordHash = await bcrypt.hash(dto.password, 10);
-    const user = await this.prisma.user.create({
+    await this.prisma.user.create({
       data: {
         email: dto.email,
         passwordHash,
         name: dto.name,
+        className: dto.className,
+        graduationYear: dto.graduationYear,
         role: Role.student,
+        status: UserStatus.pending,
+        studentProfile: { create: { skills: [], portfolioLinks: [] } },
       },
     });
 
-    return this.issueToken(user.id, user.email, user.role);
+    // No token issued — the student can't log in until an admin approves the account.
+    return { pending: true, message: 'Registration submitted. An admin will review your account before you can log in.' };
   }
 
   async login(dto: LoginDto) {
     const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
     if (!user || !(await bcrypt.compare(dto.password, user.passwordHash))) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if (user.status === UserStatus.pending) {
+      throw new ForbiddenException('Your registration is still pending admin approval.');
+    }
+    if (user.status === UserStatus.rejected) {
+      throw new ForbiddenException('Your registration was rejected. Contact an admin for details.');
     }
 
     return this.issueToken(user.id, user.email, user.role);

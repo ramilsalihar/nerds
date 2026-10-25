@@ -26,6 +26,8 @@ async function main() {
       passwordHash,
       role: 'student',
       name: 'Alex Kim',
+      className: 'Cohort 2026-A',
+      graduationYear: 2026,
       studentProfile: { create: { skills: ['React', 'TypeScript', 'Tailwind'], portfolioLinks: ['https://alexkim.dev'] } },
     },
   });
@@ -38,6 +40,8 @@ async function main() {
       passwordHash,
       role: 'student',
       name: 'Jordan Lee',
+      className: 'Cohort 2025-B',
+      graduationYear: 2025,
       studentProfile: { create: { skills: ['Node.js', 'PostgreSQL', 'NestJS'], portfolioLinks: ['https://github.com/jordanlee'] } },
     },
   });
@@ -50,7 +54,24 @@ async function main() {
       passwordHash,
       role: 'student',
       name: 'Sam Rivera',
+      className: 'Cohort 2026-A',
+      graduationYear: 2026,
       studentProfile: { create: { skills: ['Figma', 'UI Design'], portfolioLinks: [] } },
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { email: 'taylor@nerds.dev' },
+    update: {},
+    create: {
+      email: 'taylor@nerds.dev',
+      passwordHash,
+      role: 'student',
+      status: 'pending',
+      name: 'Taylor Nguyen',
+      className: 'Cohort 2026-B',
+      graduationYear: 2026,
+      studentProfile: { create: { skills: ['Python', 'Django'], portfolioLinks: [] } },
     },
   });
 

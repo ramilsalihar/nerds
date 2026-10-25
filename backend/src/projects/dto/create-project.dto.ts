@@ -1,8 +1,9 @@
-import { IsBoolean, IsNumber, IsOptional, IsString, IsUrl, Max, Min } from 'class-validator';
+import { ArrayMaxSize, IsArray, IsBoolean, IsNumber, IsOptional, IsString, IsUrl, Max, Min } from 'class-validator';
 
 export class CreateProjectDto {
+  @IsOptional()
   @IsString()
-  studentId!: string;
+  studentId?: string;
 
   @IsString()
   title!: string;
@@ -17,6 +18,16 @@ export class CreateProjectDto {
   @IsOptional()
   @IsUrl()
   liveUrl?: string;
+
+  @IsOptional()
+  @IsUrl()
+  videoUrl?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(8)
+  @IsUrl({}, { each: true })
+  imageUrls?: string[];
 
   @IsOptional()
   @IsBoolean()

@@ -15,15 +15,24 @@ enum Role {
   admin
 }
 
+enum UserStatus {
+  pending
+  approved
+  rejected
+}
+
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  passwordHash String
-  role         Role
-  name         String
-  avatarUrl    String?
-  bio          String?
-  createdAt    DateTime @default(now())
+  id             String     @id @default(cuid())
+  email          String     @unique
+  passwordHash   String
+  role           Role
+  status         UserStatus @default(approved)
+  name           String
+  avatarUrl      String?
+  bio            String?
+  className      String?
+  graduationYear Int?
+  createdAt      DateTime   @default(now())
 
   studentProfile StudentProfile?
   projects       Project[]
@@ -45,6 +54,8 @@ model Project {
   description String
   repoUrl     String?
   liveUrl     String?
+  videoUrl    String?
+  imageUrls   String[] @default([])
   deployed    Boolean @default(false)
 
   usersCount         Int     @default(0)

@@ -1,13 +1,18 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard.js';
-import { RolesGuard } from '../common/guards/roles.guard.js';
-import { Roles } from '../common/decorators/roles.decorator.js';
+import { CurrentUser } from '../common/decorators/current-user.decorator.js';
 import { Role } from '../generated/prisma/enums.js';
 import { ProjectsService } from './projects.service.js';
 import { CreateProjectDto } from './dto/create-project.dto.js';
 import { UpdateProjectDto } from './dto/update-project.dto.js';
 import { LikeProjectDto } from './dto/like-project.dto.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
+
+interface AuthenticatedUser {
+  id: string;
+  email: string;
+  role: Role;
+}
 
 @Controller('projects')
 export class ProjectsController {
@@ -23,25 +28,23 @@ export class ProjectsController {
     return this.projectsService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.admin)
+  // Admins can create a project for any student; students can only create their own.
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() dto: CreateProjectDto) {
-    return this.projectsService.create(dto);
+  create(@Body() dto: CreateProjectDto, @CurrentUser() user: AuthenticatedUser) {
+    return this.projectsService.create(dto, user);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.admin)
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateProjectDto) {
-    return this.projectsService.update(id, dto);
+  update(@Param('id') id: string, @Body() dto: UpdateProjectDto, @CurrentUser() user: AuthenticatedUser) {
+    return this.projectsService.update(id, dto, user);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.admin)
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.projectsService.remove(id);
+  remove(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.projectsService.remove(id, user);
   }
 
   @Post(':id/like')

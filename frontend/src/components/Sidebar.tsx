@@ -70,6 +70,7 @@ export function Sidebar() {
           {user?.role === 'admin' && <SidebarLink to="/projects" label="Projects" icon={<ProjectsIcon />} />}
           {user?.role === 'admin' && <SidebarLink to="/students" label="Students" icon={<StudentsIcon />} />}
           {user?.role === 'admin' && <SidebarLink to="/settings" label="Settings" icon={<SettingsIcon />} />}
+          {user?.role === 'student' && <SidebarLink to="/profile" label="My profile" icon={<StudentsIcon />} />}
         </div>
 
         <div className="sidebar__group">
