@@ -34,6 +34,13 @@
   color: var(--label-tertiary);
 }
 
+.topbar__end {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
 .topbar__user {
   display: flex;
   align-items: center;

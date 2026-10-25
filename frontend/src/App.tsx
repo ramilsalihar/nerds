@@ -3,12 +3,8 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import { ProtectedRoute, Sidebar, Topbar } from './components'
 import { Admin } from './pages/Admin'
 import { Dashboard } from './pages/Dashboard'
-import { Donate } from './pages/Donate'
 import { Login } from './pages/Login'
-import { MyProjects } from './pages/MyProjects'
 import { ProjectDetail } from './pages/ProjectDetail'
-import { Register } from './pages/Register'
-import { SubmitProject } from './pages/SubmitProject'
 import './App.css'
 
 export default function App() {
@@ -24,26 +20,8 @@ export default function App() {
         <div className="app-shell__content">
           <Routes>
             <Route path="/" element={<Dashboard search={search} />} />
-            <Route path="/donate" element={<Donate />} />
             <Route path="/projects/:id" element={<ProjectDetail />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route
-              path="/my-projects"
-              element={
-                <ProtectedRoute roles={['student', 'client']}>
-                  <MyProjects />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/submit-project"
-              element={
-                <ProtectedRoute roles={['client']}>
-                  <SubmitProject />
-                </ProtectedRoute>
-              }
-            />
             <Route
               path="/admin"
               element={

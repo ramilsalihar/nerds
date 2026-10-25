@@ -14,6 +14,14 @@
   margin: 0;
 }
 
+.admin__section-title {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--label-primary);
+  margin: 0 0 16px;
+}
+
 .admin__error {
   margin: 0;
   font-family: var(--font-sans);
@@ -26,24 +34,9 @@
   gap: 8px;
 }
 
-.admin__amount {
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 650;
-  white-space: nowrap;
-}
-
-.admin__amount--inflow {
-  color: var(--color-green-strong);
-}
-
-.admin__amount--outflow {
-  color: var(--label-tertiary);
-}
-
-.admin__post-note {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  color: var(--label-secondary);
-  margin: 0 0 16px;
+.admin__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 420px;
 }

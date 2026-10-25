@@ -1,7 +1,9 @@
-import { IsDateString, IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
-import { BudgetType } from '../../generated/prisma/enums.js';
+import { IsBoolean, IsNumber, IsOptional, IsString, IsUrl, Max, Min } from 'class-validator';
 
 export class CreateProjectDto {
+  @IsString()
+  studentId!: string;
+
   @IsString()
   title!: string;
 
@@ -9,17 +11,36 @@ export class CreateProjectDto {
   description!: string;
 
   @IsOptional()
-  @IsString()
-  technicalSpec?: string;
-
-  @IsEnum(BudgetType)
-  budgetType!: BudgetType;
-
-  @IsNumber()
-  @Min(0)
-  budgetAmount!: number;
+  @IsUrl()
+  repoUrl?: string;
 
   @IsOptional()
-  @IsDateString()
-  deadline?: string;
+  @IsUrl()
+  liveUrl?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  deployed?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  usersCount?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  revenueAmount?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(5)
+  uiUxRating?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(5)
+  functionalityRating?: number;
 }

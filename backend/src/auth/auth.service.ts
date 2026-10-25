@@ -2,6 +2,7 @@ import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/co
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { Role } from '../generated/prisma/enums.js';
 import type { RegisterDto } from './dto/register.dto.js';
 import type { LoginDto } from './dto/login.dto.js';
 
@@ -24,7 +25,7 @@ export class AuthService {
         email: dto.email,
         passwordHash,
         name: dto.name,
-        role: dto.role,
+        role: Role.student,
       },
     });
 

@@ -17,11 +17,32 @@
   gap: 6px;
 }
 
+.project-form__field--inline {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .project-form__label {
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 590;
   color: var(--label-secondary);
+}
+
+.project-form__select {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--label-primary);
+  background: var(--bg-grouped-secondary);
+  border: 1px solid var(--separator);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+}
+
+.project-form__actions {
+  display: flex;
+  gap: 8px;
 }
 
 .project-form__error {

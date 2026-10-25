@@ -1,60 +1,41 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { Button, Card, List, ListRow, PillFilter, ProjectCard } from '../components'
+import { Card, ProjectCard } from '../components'
 import { api } from '../lib/api'
-import { currency, relativeTime } from '../lib/format'
-import type { LedgerEntry, Project } from '../lib/types'
+import { tileFor } from '../lib/color'
+import type { Project } from '../lib/types'
 import './Dashboard.css'
 
-type BudgetFilter = 'all' | 'fixed_tier' | 'custom'
-
-const BUDGET_PILLS: { label: string; value: BudgetFilter }[] = [
-  { label: 'All', value: 'all' },
-  { label: 'Fixed price', value: 'fixed_tier' },
-  { label: 'Custom quote', value: 'custom' },
-]
-
 export function Dashboard({ search = '' }: { search?: string }) {
-  const navigate = useNavigate()
   const [projects, setProjects] = useState<Project[] | null>(null)
-  const [ledger, setLedger] = useState<LedgerEntry[] | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [budgetFilter, setBudgetFilter] = useState<BudgetFilter>('all')
 
   useEffect(() => {
-    Promise.all([api<Project[]>('/projects'), api<LedgerEntry[]>('/donation-pool/ledger')])
-      .then(([projectsRes, ledgerRes]) => {
-        setProjects([...projectsRes].sort((a, b) => b.createdAt.localeCompare(a.createdAt)))
-        setLedger(ledgerRes)
-      })
+    api<Project[]>('/projects')
+      .then(setProjects)
       .catch((err: Error) => setError(err.message))
   }, [])
 
-  const featured = projects?.[0] ?? null
-
-  const totals = useMemo(() => {
-    if (!ledger) return null
-    const raised = ledger.reduce((sum, e) => sum + (e.type === 'inflow' ? Number(e.amount) : -Number(e.amount)), 0)
-    return { raised, count: ledger.length }
-  }, [ledger])
-
-  const gridProjects = useMemo(() => {
+  const filtered = useMemo(() => {
     if (!projects) return []
     const query = search.trim().toLowerCase()
-    return projects
-      .filter((p) => budgetFilter === 'all' || p.budgetType === budgetFilter)
-      .filter((p) => !query || p.title.toLowerCase().includes(query) || p.description.toLowerCase().includes(query))
-  }, [projects, featured, budgetFilter, search])
+    if (!query) return projects
+    return projects.filter(
+      (p) =>
+        p.title.toLowerCase().includes(query) ||
+        p.description.toLowerCase().includes(query) ||
+        p.student?.name.toLowerCase().includes(query),
+    )
+  }, [projects, search])
 
   if (error) {
     return (
       <Card>
-        <p style={{ margin: 0, color: 'var(--color-red-strong)' }}>Couldn't load the dashboard: {error}</p>
+        <p style={{ margin: 0, color: 'var(--color-red-strong)' }}>Couldn't load the leaderboard: {error}</p>
       </Card>
     )
   }
 
-  if (!projects || !ledger) {
+  if (!projects) {
     return (
       <Card>
         <p style={{ margin: 0, color: 'var(--label-secondary)' }}>Loading…</p>
@@ -62,96 +43,57 @@ export function Dashboard({ search = '' }: { search?: string }) {
     )
   }
 
+  const top3 = filtered.slice(0, 3)
+  const rest = filtered.slice(3)
+
   return (
     <div className="dashboard">
-      <div className="dashboard__main">
-        {featured && (
-          <div className="hero">
-            <span className="hero__eyebrow">Newly opened</span>
-            <h1 className="hero__title">{featured.title}</h1>
-            <p className="hero__budget">{currency.format(Number(featured.budgetAmount))} budget</p>
-            <Button
-              variant="filled"
-              className="hero__cta"
-              onClick={() => document.getElementById('projects-grid')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              View open projects
-            </Button>
-          </div>
-        )}
-
-        <div className="dashboard__section-header">
-          <h2 className="dashboard__section-title">Open Projects</h2>
-          <PillFilter options={BUDGET_PILLS} value={budgetFilter} onChange={setBudgetFilter} />
-        </div>
-
-        <div id="projects-grid" className="dashboard__grid">
-          {gridProjects.length === 0 && (
-            <Card>
-              <p style={{ margin: 0, color: 'var(--label-secondary)' }}>No projects match right now.</p>
-            </Card>
-          )}
-          {gridProjects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </div>
+      <div className="dashboard__header">
+        <h1 className="dashboard__title">Leaderboard</h1>
+        <p className="dashboard__subtitle">
+          Ranked by users, revenue, ratings, deploy status and likes — keep shipping to climb.
+        </p>
       </div>
 
-      <div className="dashboard__side">
+      {filtered.length === 0 && (
         <Card>
-          <div className="dashboard__section-header">
-            <h2 className="dashboard__section-title">What's New</h2>
-            <Link to="/donate" className="dashboard__see-all">
-              See All
-            </Link>
-          </div>
-          <List>
-            {ledger.slice(0, 3).map((entry) => (
-              <ListRow
-                key={entry.id}
-                title={entry.description}
-                subtitle={`${relativeTime(entry.createdAt)}${entry.donorName ? ` · ${entry.donorName}` : ''}`}
-                trailing={
-                  <span className={`dashboard__amount dashboard__amount--${entry.type}`}>
-                    {entry.type === 'inflow' ? '+' : '−'}
-                    {currency.format(Number(entry.amount))}
-                  </span>
-                }
-              />
-            ))}
-          </List>
+          <p style={{ margin: 0, color: 'var(--label-secondary)' }}>No projects match right now.</p>
         </Card>
+      )}
 
-        <Card className="dashboard__promo">
-          <span className="dashboard__promo-tag">Donation Pool</span>
-          <h2 className="dashboard__promo-title">Support Student Projects</h2>
-          <p className="dashboard__promo-copy">
-            A share of every project's budget — plus every direct donation — funds free tooling, hosting, and
-            hackathons for students.
-          </p>
-          <div className="dashboard__promo-stats">
-            {totals && (
-              <>
-                <div className="dashboard__promo-stat">
-                  <strong>{currency.format(totals.raised)}</strong>
-                  <span>Raised</span>
-                </div>
-                <div className="dashboard__promo-stat">
-                  <strong>{totals.count}</strong>
-                  <span>Donations</span>
-                </div>
-                <div className="dashboard__promo-stat">
-                  <strong>{projects.length}</strong>
-                  <span>Open projects</span>
-                </div>
-              </>
-            )}
+      {top3.length > 0 && (
+        <div className="podium">
+          {[top3[1], top3[0], top3[2]].map((project, i) =>
+            project ? <PodiumSpot key={project.id} project={project} place={[2, 1, 3][i]} /> : <div key={`empty-${i}`} />,
+          )}
+        </div>
+      )}
+
+      {rest.length > 0 && (
+        <>
+          <h2 className="dashboard__section-title">Everyone else</h2>
+          <div className="dashboard__grid">
+            {rest.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
           </div>
-          <Button variant="filled" style={{ width: '100%' }} onClick={() => navigate('/donate')}>
-            Donate now
-          </Button>
-        </Card>
-      </div>
+        </>
+      )}
     </div>
+  )
+}
+
+function PodiumSpot({ project, place }: { project: Project; place: number }) {
+  return (
+    <a href={`/projects/${project.id}`} className={`podium__spot podium__spot--${place}`}>
+      <div className="podium__medal">{place === 1 ? '🥇' : place === 2 ? '🥈' : '🥉'}</div>
+      <div className="podium__tile" style={tileFor(project.id)}>
+        {project.title.charAt(0).toUpperCase()}
+      </div>
+      <h3 className="podium__title">{project.title}</h3>
+      {project.student && <p className="podium__student">by {project.student.name}</p>}
+      <p className="podium__score">{project.score} pts</p>
+      <p className="podium__likes">{project.likeCount} likes</p>
+    </a>
   )
 }
