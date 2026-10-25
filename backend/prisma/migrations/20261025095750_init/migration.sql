@@ -1,3 +1,22 @@
+-- DropLegacyMarketplaceSchema (safe no-op on a fresh database)
+DROP TABLE IF EXISTS "Review" CASCADE;
+DROP TABLE IF EXISTS "DonationPoolLedger" CASCADE;
+DROP TABLE IF EXISTS "Transaction" CASCADE;
+DROP TABLE IF EXISTS "Submission" CASCADE;
+DROP TABLE IF EXISTS "Application" CASCADE;
+DROP TABLE IF EXISTS "Project" CASCADE;
+DROP TABLE IF EXISTS "ClientProfile" CASCADE;
+DROP TABLE IF EXISTS "StudentProfile" CASCADE;
+DROP TABLE IF EXISTS "User" CASCADE;
+DROP TYPE IF EXISTS "LedgerEntryType";
+DROP TYPE IF EXISTS "TransactionStatus";
+DROP TYPE IF EXISTS "SubmissionStatus";
+DROP TYPE IF EXISTS "ApplicationStatus";
+DROP TYPE IF EXISTS "ProjectStatus";
+DROP TYPE IF EXISTS "BudgetType";
+DROP TYPE IF EXISTS "VerificationStatus";
+DROP TYPE IF EXISTS "Role";
+
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('student', 'admin');
 
