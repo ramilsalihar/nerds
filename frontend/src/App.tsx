@@ -4,6 +4,7 @@ import { ProtectedRoute, Sidebar, Topbar } from './components'
 import { Dashboard } from './pages/Dashboard'
 import { Login } from './pages/Login'
 import { ProjectDetail } from './pages/ProjectDetail'
+import { Projects } from './pages/Projects'
 import { Settings } from './pages/Settings'
 import { Students } from './pages/Students'
 import './App.css'
@@ -23,6 +24,14 @@ export default function App() {
             <Route path="/" element={<Dashboard search={search} />} />
             <Route path="/projects/:id" element={<ProjectDetail />} />
             <Route path="/login" element={<Login />} />
+            <Route
+              path="/projects"
+              element={
+                <ProtectedRoute roles={['admin']}>
+                  <Projects />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/students"
               element={

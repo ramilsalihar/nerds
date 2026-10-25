@@ -27,6 +27,13 @@ const StudentsIcon = () => (
   </Icon>
 )
 
+const ProjectsIcon = () => (
+  <Icon>
+    <rect x="4" y="4" width="16" height="16" rx="2" />
+    <path d="M8 9h8M8 13h8M8 17h5" />
+  </Icon>
+)
+
 const SettingsIcon = () => (
   <Icon>
     <circle cx="12" cy="12" r="3" />
@@ -60,6 +67,7 @@ export function Sidebar() {
             <span className="sidebar__wordmark">nerds</span>
           </div>
           <SidebarLink to="/" label="Dashboard" icon={<HomeIcon />} end />
+          {user?.role === 'admin' && <SidebarLink to="/projects" label="Projects" icon={<ProjectsIcon />} />}
           {user?.role === 'admin' && <SidebarLink to="/students" label="Students" icon={<StudentsIcon />} />}
           {user?.role === 'admin' && <SidebarLink to="/settings" label="Settings" icon={<SettingsIcon />} />}
         </div>
