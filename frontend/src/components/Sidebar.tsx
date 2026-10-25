@@ -18,25 +18,6 @@ const HomeIcon = () => (
   </Icon>
 )
 
-const DonateIcon = () => (
-  <Icon>
-    <path d="M12 20s-7-4.2-9.5-8.6C.8 8 2 4.5 5.3 3.8 7.6 3.3 9.8 4.6 12 7c2.2-2.4 4.4-3.7 6.7-3.2 3.3.7 4.5 4.2 2.8 7.6C19 15.8 12 20 12 20Z" />
-  </Icon>
-)
-
-const MyProjectsIcon = () => (
-  <Icon>
-    <rect x="4" y="4" width="16" height="16" rx="2" />
-    <path d="M8 9h8M8 13h8M8 17h5" />
-  </Icon>
-)
-
-const PostIcon = () => (
-  <Icon>
-    <path d="M12 5v14M5 12h14" />
-  </Icon>
-)
-
 const AdminIcon = () => (
   <Icon>
     <circle cx="12" cy="12" r="3" />
@@ -67,12 +48,7 @@ export function Sidebar() {
         <div className="sidebar__logo" title="nerds">
           n
         </div>
-        <SidebarLink to="/" label="Dashboard" icon={<HomeIcon />} end />
-        <SidebarLink to="/donate" label="Donate" icon={<DonateIcon />} />
-        {(user?.role === 'student' || user?.role === 'client') && (
-          <SidebarLink to="/my-projects" label={user.role === 'client' ? 'Your projects' : 'Your work'} icon={<MyProjectsIcon />} />
-        )}
-        {user?.role === 'client' && <SidebarLink to="/submit-project" label="Submit a project" icon={<PostIcon />} />}
+        <SidebarLink to="/" label="Leaderboard" icon={<HomeIcon />} end />
         {user?.role === 'admin' && <SidebarLink to="/admin" label="Admin" icon={<AdminIcon />} />}
       </div>
 

@@ -1,6 +1,6 @@
 .project-detail {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-columns: minmax(0, 1fr) 260px;
   gap: 16px;
   align-items: start;
 }
@@ -16,43 +16,31 @@
 .project-detail__header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
+  flex-wrap: wrap;
   margin-bottom: 8px;
 }
 
-.project-detail__status {
+.project-detail__rank {
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 650;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
   padding: 4px 10px;
   border-radius: var(--radius-pill);
-  background: var(--fill-secondary);
-  color: var(--label-secondary);
-}
-
-.project-detail__status--open {
-  background: color-mix(in srgb, var(--color-green-strong) 16%, transparent);
-  color: var(--color-green-strong);
-}
-
-.project-detail__status--in_progress,
-.project-detail__status--submitted {
   background: color-mix(in srgb, var(--brand-primary) 16%, transparent);
   color: var(--brand-primary);
 }
 
-.project-detail__status--completed {
-  background: color-mix(in srgb, var(--color-teal-strong) 16%, transparent);
-  color: var(--color-teal-strong);
-}
-
-.project-detail__status--rejected,
-.project-detail__status--disputed {
-  background: color-mix(in srgb, var(--color-red-strong) 16%, transparent);
-  color: var(--color-red-strong);
+.project-detail__badge {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--color-green-strong);
+  background: color-mix(in srgb, var(--color-green-strong) 16%, transparent);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
 }
 
 .project-detail__title {
@@ -61,14 +49,6 @@
   font-weight: 700;
   color: var(--label-primary);
   margin: 0 0 6px;
-}
-
-.project-detail__budget {
-  font-family: var(--font-sans);
-  font-size: 15px;
-  font-weight: 590;
-  color: var(--label-primary);
-  margin: 0 0 4px;
 }
 
 .project-detail__client,
@@ -88,12 +68,18 @@
   white-space: pre-wrap;
 }
 
-.project-detail__subhead {
+.project-detail__links {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.project-detail__link {
   font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 650;
-  color: var(--label-primary);
-  margin: 12px 0 4px;
+  font-size: 13px;
+  font-weight: 590;
+  color: var(--brand-primary);
+  text-decoration: none;
 }
 
 .project-detail__section-title {
@@ -105,15 +91,75 @@
 }
 
 .project-detail__error {
+  margin: 0;
   font-family: var(--font-sans);
   font-size: 13px;
   color: var(--color-red-strong);
-  margin: 8px 0 0;
 }
 
-.project-detail__row-actions {
+.project-detail__metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 12px;
+}
+
+.project-detail__metric {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 8px;
+  border-radius: var(--radius-md);
+  background: var(--fill-quaternary);
+}
+
+.project-detail__metric-value {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--label-primary);
+}
+
+.project-detail__metric-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--label-secondary);
+}
+
+.project-detail__comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.project-detail__comments {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.project-detail__comment {
+  padding: 10px 0;
+  border-top: 1px solid var(--separator);
+}
+
+.project-detail__comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--label-primary);
+  margin-bottom: 4px;
+}
+
+.project-detail__comment-body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--label-primary);
+  margin: 0;
+  white-space: pre-wrap;
 }
 
 @media (max-width: 860px) {

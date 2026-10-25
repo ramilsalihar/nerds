@@ -1,57 +1,46 @@
-export type BudgetType = 'fixed_tier' | 'custom'
-export type ProjectStatus = 'pending_review' | 'open' | 'in_progress' | 'submitted' | 'completed' | 'disputed' | 'rejected'
-export type ApplicationStatus = 'pending' | 'accepted' | 'rejected'
-export type SubmissionStatus = 'pending_review' | 'approved' | 'changes_requested'
-
-export interface UserSummary {
+export interface StudentSummary {
   id: string
   name: string
+  avatarUrl: string | null
+}
+
+export interface Comment {
+  id: string
+  projectId: string
+  authorName: string
+  body: string
+  createdAt: string
 }
 
 export interface Project {
   id: string
+  studentId: string
   title: string
   description: string
-  technicalSpec: string | null
-  budgetType: BudgetType
-  budgetAmount: string
-  status: ProjectStatus
-  deadline: string | null
+  repoUrl: string | null
+  liveUrl: string | null
+  deployed: boolean
+  usersCount: number
+  revenueAmount: string
+  uiUxRating: number
+  functionalityRating: number
+  likeCount: number
   createdAt: string
-  clientId?: string
-  assignedStudentId?: string | null
-  client?: UserSummary
-  assignedStudent?: UserSummary | null
+  updatedAt: string
+  student?: StudentSummary
+  _count?: { comments: number }
+  comments?: Comment[]
+  score: number
+  rank?: number
 }
 
-export interface Application {
+export interface Student {
   id: string
-  projectId: string
-  studentId: string
-  proposedPrice: string | null
-  message: string
-  status: ApplicationStatus
+  email: string
+  role: 'student'
+  name: string
+  avatarUrl: string | null
+  bio: string | null
   createdAt: string
-  student?: UserSummary
-  project?: Project
-}
-
-export interface Submission {
-  id: string
-  projectId: string
-  studentId: string
-  files: string[]
-  notes: string | null
-  status: SubmissionStatus
-  submittedAt: string
-}
-
-export interface LedgerEntry {
-  id: string
-  amount: string
-  type: 'inflow' | 'outflow'
-  description: string
-  donorName: string | null
-  donorEmail: string | null
-  createdAt: string
+  studentProfile?: { skills: string[]; portfolioLinks: string[] } | null
 }

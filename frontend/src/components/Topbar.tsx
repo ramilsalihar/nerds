@@ -20,7 +20,7 @@ export function Topbar({ search, onSearchChange }: TopbarProps) {
             <path d="m21 21-4.3-4.3" />
           </svg>
           <input
-            placeholder="Search projects or budget type"
+            placeholder="Search projects or students"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
           />
@@ -29,21 +29,23 @@ export function Topbar({ search, onSearchChange }: TopbarProps) {
         <span />
       )}
 
-      {user ? (
-        <div className="topbar__user">
-          <div className="topbar__greeting">
-            <span className="topbar__greeting-label">Welcome back,</span>
-            <span className="topbar__greeting-name">{user.name}</span>
+      <div className="topbar__end">
+        {user ? (
+          <div className="topbar__user">
+            <div className="topbar__greeting">
+              <span className="topbar__greeting-label">Welcome back,</span>
+              <span className="topbar__greeting-name">{user.name}</span>
+            </div>
+            <div className="topbar__avatar" style={{ background: colorFor(user.id) }}>
+              {initials(user.name)}
+            </div>
           </div>
-          <div className="topbar__avatar" style={{ background: colorFor(user.id) }}>
-            {initials(user.name)}
-          </div>
-        </div>
-      ) : (
-        <Link to="/login" className="topbar__login">
-          Log in
-        </Link>
-      )}
+        ) : (
+          <Link to="/login" className="topbar__login">
+            Log in
+          </Link>
+        )}
+      </div>
     </header>
   )
 }

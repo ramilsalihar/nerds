@@ -16,6 +16,11 @@
   box-shadow: var(--shadow-md);
 }
 
+.project-card__top {
+  position: relative;
+  width: 100%;
+}
+
 .project-card__tile {
   width: 100%;
   aspect-ratio: 16 / 10;
@@ -29,6 +34,20 @@
   margin-bottom: 4px;
 }
 
+.project-card__rank {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  background: var(--brand-primary);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+}
+
 .project-card__title {
   margin: 0;
   font-family: var(--font-sans);
@@ -38,6 +57,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.project-card__student {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--label-secondary);
 }
 
 .project-card__description {
@@ -55,7 +81,7 @@
 .project-card__stats {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 4px;
 }
@@ -76,4 +102,17 @@
 
 .project-card__stat--muted {
   color: var(--label-tertiary);
+  margin-left: auto;
+}
+
+.project-card__badge {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--color-green-strong);
+  background: color-mix(in srgb, var(--color-green-strong) 16%, transparent);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
 }

@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { api } from './api'
 
-export type Role = 'student' | 'client' | 'admin'
+export type Role = 'student' | 'admin'
 
 export interface User {
   id: string
@@ -17,7 +17,6 @@ interface AuthState {
 
 interface AuthContextValue extends AuthState {
   login: (email: string, password: string) => Promise<void>
-  register: (email: string, password: string, name: string, role: Role) => Promise<void>
   logout: () => void
 }
 
@@ -52,19 +51,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setState({ token: accessToken, user: decodeToken(accessToken) })
   }
 
-  async function register(email: string, password: string, name: string, role: Role) {
-    const { accessToken } = await api<{ accessToken: string }>('/auth/register', {
-      method: 'POST',
-      body: { email, password, name, role },
-    })
-    setState({ token: accessToken, user: decodeToken(accessToken) })
-  }
-
   function logout() {
     setState({ token: null, user: null })
   }
 
-  return <AuthContext.Provider value={{ ...state, login, register, logout }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ ...state, login, logout }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {
