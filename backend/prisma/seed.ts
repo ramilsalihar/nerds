@@ -18,34 +18,6 @@ async function main() {
     create: { email: 'admin@nerds.dev', passwordHash, role: 'admin', name: 'Admin' },
   });
 
-  const alex = await prisma.user.upsert({
-    where: { email: 'alex@nerds.dev' },
-    update: {},
-    create: {
-      email: 'alex@nerds.dev',
-      passwordHash,
-      role: 'student',
-      name: 'Alex Kim',
-      className: 'Cohort 2026-A',
-      graduationYear: 2026,
-      studentProfile: { create: { skills: ['React', 'TypeScript', 'Tailwind'], portfolioLinks: ['https://alexkim.dev'] } },
-    },
-  });
-
-  const jordan = await prisma.user.upsert({
-    where: { email: 'jordan@nerds.dev' },
-    update: {},
-    create: {
-      email: 'jordan@nerds.dev',
-      passwordHash,
-      role: 'student',
-      name: 'Jordan Lee',
-      className: 'Cohort 2025-B',
-      graduationYear: 2025,
-      studentProfile: { create: { skills: ['Node.js', 'PostgreSQL', 'NestJS'], portfolioLinks: ['https://github.com/jordanlee'] } },
-    },
-  });
-
   const sam = await prisma.user.upsert({
     where: { email: 'sam@nerds.dev' },
     update: {},
@@ -77,36 +49,6 @@ async function main() {
 
   await prisma.project.create({
     data: {
-      studentId: jordan.id,
-      title: 'Nonprofit inventory tracker',
-      description: 'Simple CRUD app so a local food bank can track donated inventory by category.',
-      repoUrl: 'https://github.com/jordanlee/inventory-tracker',
-      liveUrl: 'https://inventory-tracker.example.com',
-      deployed: true,
-      usersCount: 240,
-      revenueAmount: 0,
-      uiUxRating: 4.2,
-      functionalityRating: 4.6,
-    },
-  });
-
-  await prisma.project.create({
-    data: {
-      studentId: alex.id,
-      title: 'Marketing analytics dashboard',
-      description: 'Dashboard pulling campaign spend and conversion data into one view.',
-      repoUrl: 'https://github.com/alexkim/analytics-dash',
-      liveUrl: 'https://analytics-dash.example.com',
-      deployed: true,
-      usersCount: 85,
-      revenueAmount: 1200,
-      uiUxRating: 4.8,
-      functionalityRating: 4.1,
-    },
-  });
-
-  await prisma.project.create({
-    data: {
       studentId: sam.id,
       title: 'Campus event finder',
       description: 'Browse and RSVP to campus events, with a Figma-polished UI.',
@@ -120,7 +62,7 @@ async function main() {
 
   console.log('Seeded:', {
     admin: admin.email,
-    students: [alex.email, jordan.email, sam.email],
+    students: [sam.email],
     password: 'password123 (for every seeded user)',
   });
 }
