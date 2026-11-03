@@ -1,10 +1,30 @@
-import { useEffect, useState } from 'react'
-import { Button, Card, List, ListRow, ProjectForm } from '../components'
+import { useEffect, useMemo, useState } from 'react'
+import { Button, Card, List, ListRow, MetricChart, PillFilter, ProjectForm } from '../components'
+import type { ChartMetricKey } from '../components'
+import { metricValueOf } from '../components/MetricChart'
 import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import { relativeTime } from '../lib/format'
 import type { Project, Student } from '../lib/types'
 import './Projects.css'
+
+const FILTER_PILLS: { label: string; value: ChartMetricKey }[] = [
+  { label: 'Score', value: 'score' },
+  { label: 'Users', value: 'usersCount' },
+  { label: 'Earned money', value: 'revenueAmount' },
+  { label: 'Likes', value: 'likeCount' },
+  { label: 'UI/UX', value: 'uiUxRating' },
+  { label: 'Functionality', value: 'functionalityRating' },
+]
+
+const FILTER_LABEL: Record<ChartMetricKey, string> = {
+  score: 'Score',
+  usersCount: 'Users',
+  revenueAmount: 'Earned money',
+  likeCount: 'Likes',
+  uiUxRating: 'UI/UX',
+  functionalityRating: 'Functionality',
+}
 
 export function Projects() {
   const { token } = useAuth()
@@ -13,6 +33,7 @@ export function Projects() {
   const [error, setError] = useState<string | null>(null)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [creating, setCreating] = useState(false)
+  const [activeFilter, setActiveFilter] = useState<ChartMetricKey | null>(null)
 
   function loadStudents() {
     api<Student[]>('/users/students', { token })
@@ -37,6 +58,16 @@ export function Projects() {
     setCreating(false)
     setEditingProject(null)
   }
+
+  function toggleFilter(filter: ChartMetricKey) {
+    setActiveFilter((prev) => (prev === filter ? null : filter))
+  }
+
+  const sortedProjects = useMemo(() => {
+    if (!projects) return null
+    if (!activeFilter) return projects
+    return [...projects].sort((a, b) => metricValueOf(b, activeFilter) - metricValueOf(a, activeFilter))
+  }, [projects, activeFilter])
 
   return (
     <div className="projects-admin">
@@ -74,25 +105,33 @@ export function Projects() {
         )}
 
         {!formOpen && (
-          projects === null ? (
+          sortedProjects === null ? (
             <p style={{ color: 'var(--label-secondary)' }}>Loading…</p>
-          ) : projects.length === 0 ? (
+          ) : sortedProjects.length === 0 ? (
             <p style={{ color: 'var(--label-secondary)' }}>No projects yet.</p>
           ) : (
-            <List>
-              {projects.map((p) => (
-                <ListRow
-                  key={p.id}
-                  title={`#${p.rank} · ${p.title}`}
-                  subtitle={`${p.student?.name ?? 'Unassigned'} · score ${p.score} · ${p.likeCount} likes · ${relativeTime(p.createdAt)}`}
-                  trailing={
-                    <Button variant="tinted" size="small" onClick={() => setEditingProject(p)}>
-                      Edit
-                    </Button>
-                  }
-                />
-              ))}
-            </List>
+            <>
+              <div className="projects-admin__filters">
+                <PillFilter options={FILTER_PILLS} value={activeFilter ?? ('' as ChartMetricKey)} onChange={toggleFilter} />
+              </div>
+
+              {activeFilter && <MetricChart projects={sortedProjects} metricKey={activeFilter} label={FILTER_LABEL[activeFilter]} />}
+
+              <List>
+                {sortedProjects.map((p) => (
+                  <ListRow
+                    key={p.id}
+                    title={`#${p.rank} · ${p.title}`}
+                    subtitle={`${p.student?.name ?? 'Unassigned'} · score ${p.score} · ${p.likeCount} likes · ${relativeTime(p.createdAt)}`}
+                    trailing={
+                      <Button variant="tinted" size="small" onClick={() => setEditingProject(p)}>
+                        Edit
+                      </Button>
+                    }
+                  />
+                ))}
+              </List>
+            </>
           )
         )}
       </Card>

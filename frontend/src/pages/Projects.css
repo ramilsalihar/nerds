@@ -43,6 +43,10 @@
   margin: 0;
 }
 
+.projects-admin__filters {
+  margin-bottom: 16px;
+}
+
 .projects-admin__error {
   margin: 0;
   font-family: var(--font-sans);
