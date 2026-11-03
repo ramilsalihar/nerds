@@ -1,6 +1,8 @@
 export { Button } from './Button'
 export { Card } from './Card'
 export { List, ListRow } from './List'
+export { MetricChart } from './MetricChart'
+export type { ChartMetricKey } from './MetricChart'
 export { PillFilter } from './PillFilter'
 export { ProjectCard } from './ProjectCard'
 export { ProjectForm } from './ProjectForm'

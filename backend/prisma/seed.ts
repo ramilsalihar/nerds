@@ -18,20 +18,6 @@ async function main() {
     create: { email: 'admin@nerds.dev', passwordHash, role: 'admin', name: 'Admin' },
   });
 
-  const sam = await prisma.user.upsert({
-    where: { email: 'sam@nerds.dev' },
-    update: {},
-    create: {
-      email: 'sam@nerds.dev',
-      passwordHash,
-      role: 'student',
-      name: 'Sam Rivera',
-      className: 'Cohort 2026-A',
-      graduationYear: 2026,
-      studentProfile: { create: { skills: ['Figma', 'UI Design'], portfolioLinks: [] } },
-    },
-  });
-
   await prisma.user.upsert({
     where: { email: 'taylor@nerds.dev' },
     update: {},
@@ -47,22 +33,9 @@ async function main() {
     },
   });
 
-  await prisma.project.create({
-    data: {
-      studentId: sam.id,
-      title: 'Campus event finder',
-      description: 'Browse and RSVP to campus events, with a Figma-polished UI.',
-      deployed: false,
-      usersCount: 10,
-      revenueAmount: 0,
-      uiUxRating: 4.9,
-      functionalityRating: 2.5,
-    },
-  });
-
   console.log('Seeded:', {
     admin: admin.email,
-    students: [sam.email],
+    students: [],
     password: 'password123 (for every seeded user)',
   });
 }
