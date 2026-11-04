@@ -80,11 +80,25 @@ export function Dashboard({ search = '' }: { search?: string }) {
   const top3 = ranked.slice(0, 3)
   const rest = ranked.slice(3)
 
+  const totalEarnings = projects.reduce((sum, p) => sum + Number(p.revenueAmount), 0)
+  const totalUsers = projects.reduce((sum, p) => sum + p.usersCount, 0)
+
   return (
     <div className="dashboard">
       <div className="dashboard__header">
         <h1 className="dashboard__title">Leaderboard</h1>
         <p className="dashboard__subtitle">Project statistics, ranked — keep shipping to climb.</p>
+      </div>
+
+      <div className="dashboard__stats">
+        <Card className="dashboard__stat">
+          <p className="dashboard__stat-label">Total earnings</p>
+          <p className="dashboard__stat-value">${totalEarnings.toLocaleString()}</p>
+        </Card>
+        <Card className="dashboard__stat">
+          <p className="dashboard__stat-label">Total users</p>
+          <p className="dashboard__stat-value">{totalUsers.toLocaleString()}</p>
+        </Card>
       </div>
 
       <PillFilter options={SORT_PILLS} value={sortKey} onChange={setSortKey} />
