@@ -25,6 +25,33 @@
   margin: 0;
 }
 
+.dashboard__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.dashboard__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dashboard__stat-label {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--label-secondary);
+  margin: 0;
+}
+
+.dashboard__stat-value {
+  font-family: var(--font-sans);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--label-primary);
+  margin: 0;
+}
+
 .dashboard__section-title {
   font-family: var(--font-sans);
   font-size: 18px;
