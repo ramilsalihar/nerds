@@ -10,6 +10,7 @@ import { Profile } from './pages/Profile'
 import { Settings } from './pages/Settings'
 import { Students } from './pages/Students'
 import { StudentProfile } from './pages/StudentProfile'
+import { NotFound } from './pages/NotFound'
 import './App.css'
 
 export default function App() {
@@ -61,6 +62,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       </div>
