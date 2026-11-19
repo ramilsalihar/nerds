@@ -1,0 +1,32 @@
+name: Keep backend awake
+
+# Render's free plan spins the backend down after ~15 min without traffic.
+# A cold start takes 30s+, which breaks link previews (crawlers time out)
+# and makes the first page load slow. Ping it every 10 minutes.
+#
+# Notes:
+# - GitHub may delay scheduled runs by several minutes under load.
+# - GitHub disables scheduled workflows after 60 days without repo activity;
+#   re-enable from the Actions tab if that happens.
+# - Override the URL with the BACKEND_URL repository variable.
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Ping /health
+        env:
+          BACKEND_URL: ${{ vars.BACKEND_URL || 'https://nerds-backend.onrender.com' }}
+        run: |
+          # Retries cover the case where the instance was already asleep.
+          curl --fail --silent --show-error --max-time 90 \
+            --retry 3 --retry-delay 10 --retry-all-errors \
+            "$BACKEND_URL/health"
