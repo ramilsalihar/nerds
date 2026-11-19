@@ -5,6 +5,7 @@ import { metricValueOf } from '../components/MetricChart'
 import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import { relativeTime } from '../lib/format'
+import { PROJECT_TYPE_LABEL } from '../lib/types'
 import type { Project, Student } from '../lib/types'
 import './Projects.css'
 
@@ -122,7 +123,7 @@ export function Projects() {
                   <ListRow
                     key={p.id}
                     title={`#${p.rank} · ${p.title}`}
-                    subtitle={`${p.student?.name ?? 'Unassigned'} · score ${p.score} · ${p.likeCount} likes · ${relativeTime(p.createdAt)}`}
+                    subtitle={`${PROJECT_TYPE_LABEL[p.type]} · ${p.student?.name ?? 'Unassigned'} · score ${p.score} · ${p.likeCount} likes · ${relativeTime(p.createdAt)}`}
                     trailing={
                       <Button variant="tinted" size="small" onClick={() => setEditingProject(p)}>
                         Edit

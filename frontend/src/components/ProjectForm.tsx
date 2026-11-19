@@ -5,7 +5,8 @@ import { TextField } from './TextField'
 import { Textarea } from './Textarea'
 import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
-import type { Project, Student } from '../lib/types'
+import { PROJECT_TYPE_LABEL } from '../lib/types'
+import type { Project, ProjectType, Student } from '../lib/types'
 import './ProjectForm.css'
 
 interface ProjectFormProps {
@@ -26,6 +27,7 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
   const [liveUrl, setLiveUrl] = useState(project?.liveUrl ?? '')
   const [videoUrl, setVideoUrl] = useState(project?.videoUrl ?? '')
   const [imageUrls, setImageUrls] = useState((project?.imageUrls ?? []).join('\n'))
+  const [type, setType] = useState<ProjectType>(project?.type ?? 'startup')
   const [deployed, setDeployed] = useState(project?.deployed ?? false)
   const [usersCount, setUsersCount] = useState(String(project?.usersCount ?? 0))
   const [revenueAmount, setRevenueAmount] = useState(String(project?.revenueAmount ?? 0))
@@ -50,6 +52,7 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
           .split('\n')
           .map((s) => s.trim())
           .filter(Boolean),
+        type,
         deployed,
         usersCount: Number(usersCount),
         revenueAmount: Number(revenueAmount),
@@ -67,6 +70,7 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
         setLiveUrl('')
         setVideoUrl('')
         setImageUrls('')
+        setType('startup')
         setDeployed(false)
         setUsersCount('0')
         setRevenueAmount('0')
@@ -97,6 +101,23 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
           </select>
         </div>
       )}
+      <div className="project-form__field">
+        <label className="project-form__label" htmlFor="projectType">
+          Project type
+        </label>
+        <select id="projectType" className="project-form__select" value={type} onChange={(e) => setType(e.target.value as ProjectType)}>
+          {(Object.keys(PROJECT_TYPE_LABEL) as ProjectType[]).map((t) => (
+            <option key={t} value={t}>
+              {PROJECT_TYPE_LABEL[t]}
+            </option>
+          ))}
+        </select>
+        <p className="project-form__hint">
+          {type === 'startup'
+            ? 'Scored on traction: users and revenue weigh most.'
+            : 'Client work: scored on UI/UX, functionality and what the client paid. Users count is not scored.'}
+        </p>
+      </div>
       <TextField id="title" label="Title" required value={title} onChange={(e) => setTitle(e.target.value)} />
       <Textarea id="description" label="Description" required value={description} onChange={(e) => setDescription(e.target.value)} />
       <div className="project-form__row">

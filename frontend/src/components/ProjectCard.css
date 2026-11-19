@@ -134,3 +134,23 @@
   padding: 2px 8px;
   border-radius: var(--radius-pill);
 }
+
+.project-card__type {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.project-card__type--startup {
+  color: var(--color-indigo-strong);
+  background: color-mix(in srgb, var(--color-indigo-strong) 14%, transparent);
+}
+
+.project-card__type--outsource {
+  color: var(--color-orange-strong);
+  background: color-mix(in srgb, var(--color-orange-strong) 14%, transparent);
+}
