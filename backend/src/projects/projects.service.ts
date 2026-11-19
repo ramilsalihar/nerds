@@ -86,7 +86,60 @@ export class ProjectsService {
       },
     });
     if (!project) throw new NotFoundException('Project not found');
-    return { ...project, score: scoreOf(project) };
+    return { ...project, score: scoreOf(project), rank: await this.rankOf(id) };
+  }
+
+  private async rankOf(id: string): Promise<number | undefined> {
+    const all = await this.prisma.project.findMany({
+      select: {
+        id: true,
+        type: true,
+        uiUxRating: true,
+        functionalityRating: true,
+        usersCount: true,
+        revenueAmount: true,
+        likeCount: true,
+        deployed: true,
+      },
+    });
+    return withRanking(all).find((p) => p.id === id)?.rank;
+  }
+
+  // Small public payload for link previews (Open Graph tags + share image).
+  // Rank needs every project's score, so this ranks the whole set like findAll.
+  async findShareSummary(id: string) {
+    const projects = await this.prisma.project.findMany({
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        imageUrls: true,
+        type: true,
+        deployed: true,
+        likeCount: true,
+        updatedAt: true,
+        uiUxRating: true,
+        functionalityRating: true,
+        usersCount: true,
+        revenueAmount: true,
+        student: STUDENT_SELECT,
+      },
+    });
+    const project = withRanking(projects).find((p) => p.id === id);
+    if (!project) throw new NotFoundException('Project not found');
+    return {
+      id: project.id,
+      title: project.title,
+      description: project.description,
+      imageUrl: project.imageUrls[0] ?? null,
+      type: project.type,
+      deployed: project.deployed,
+      likeCount: project.likeCount,
+      rank: project.rank,
+      totalProjects: projects.length,
+      updatedAt: project.updatedAt,
+      student: project.student,
+    };
   }
 
   create(dto: CreateProjectDto, user: AuthenticatedUser) {

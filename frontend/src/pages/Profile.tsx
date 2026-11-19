@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Card, ImageUploadField, ProjectForm, TextField, Textarea } from '../components'
+import { Button, Card, ImageUploadField, ProjectForm, ShareButton, ShareCard, TextField, Textarea } from '../components'
 import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import type { Project, Student } from '../lib/types'
@@ -11,6 +11,8 @@ export function Profile() {
   const [projects, setProjects] = useState<Project[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [editingProject, setEditingProject] = useState<Project | 'new' | null>(null)
+  // Set right after a new project is created, to prompt sharing it.
+  const [justCreated, setJustCreated] = useState<Project | null>(null)
 
   function load() {
     if (!user) return
@@ -32,6 +34,15 @@ export function Profile() {
       </div>
 
       {error && <p className="profile__error">{error}</p>}
+
+      {justCreated && (
+        <Card>
+          <ShareCard project={justCreated} heading="🎉 Your project is live — share it" />
+          <Button variant="plain" size="small" style={{ marginTop: 8 }} onClick={() => setJustCreated(null)}>
+            Maybe later
+          </Button>
+        </Card>
+      )}
 
       <Card>
         <h2 className="profile__section-title">Profile details</h2>
@@ -56,9 +67,12 @@ export function Profile() {
             {projects.map((p) => (
               <div key={p.id} className="profile__project-row">
                 <span>{p.title}</span>
-                <Button variant="tinted" size="small" onClick={() => setEditingProject(p)}>
-                  Edit
-                </Button>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <ShareButton project={p} size="small" />
+                  <Button variant="tinted" size="small" onClick={() => setEditingProject(p)}>
+                    Edit
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
@@ -69,7 +83,8 @@ export function Profile() {
             students={[student]}
             lockStudent
             project={editingProject === 'new' ? undefined : editingProject}
-            onSuccess={() => {
+            onSuccess={(saved) => {
+              if (editingProject === 'new') setJustCreated(saved)
               setEditingProject(null)
               load()
             }}

@@ -27,6 +27,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Dashboard search={search} />} />
             <Route path="/projects/:id" element={<ProjectDetail />} />
+            {/* Share links; api/share.ts adds preview meta tags for this path. */}
+            <Route path="/p/:id" element={<ProjectDetail />} />
             <Route path="/students/:id" element={<StudentProfile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
