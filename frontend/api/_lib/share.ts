@@ -1,3 +1,4 @@
+/// <reference types="node" />
 // Shared helpers for the link-preview functions (api/share.ts, api/og.ts).
 // Files under api/_lib are not deployed as functions (underscore prefix).
 

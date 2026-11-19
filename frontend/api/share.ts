@@ -3,7 +3,7 @@
 // LinkedIn, Telegram, WhatsApp, etc. show the project instead of a bare
 // "nerds". Humans get the same HTML; React Router then renders the project.
 
-import { fetchShareSummary, SHOW_RANK_UP_TO, truncate, type ShareSummary } from './_lib/share'
+import { fetchShareSummary, SHOW_RANK_UP_TO, truncate, type ShareSummary } from './_lib/share.js'
 
 export const config = { runtime: 'edge' }
 
