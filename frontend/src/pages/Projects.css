@@ -53,3 +53,8 @@
   font-size: 13px;
   color: var(--color-red-strong);
 }
+
+.projects-admin__row-actions {
+  display: flex;
+  gap: 8px;
+}

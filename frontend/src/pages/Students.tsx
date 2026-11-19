@@ -122,8 +122,34 @@ function PendingRow({ student, onChanged }: { student: Student; onChanged: () =>
 }
 
 function StudentRow({ student, projects, onChanged }: { student: Student; projects: Project[]; onChanged: () => void }) {
+  const { token } = useAuth()
   const [expanded, setExpanded] = useState(false)
   const [editing, setEditing] = useState<Project | 'new' | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function remove(path: string, message: string) {
+    if (!window.confirm(message)) return
+    setBusy(true)
+    setError(null)
+    try {
+      await api(path, { method: 'DELETE', token })
+      onChanged()
+    } catch (err) {
+      setError((err as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  function deleteProject(p: Project) {
+    remove(`/projects/${p.id}`, `Delete "${p.title}"? Its likes, comments and images will be removed. This cannot be undone.`)
+  }
+
+  function deleteStudent() {
+    const projectNote = projects.length ? ` and their ${projects.length} project${projects.length === 1 ? '' : 's'}` : ''
+    remove(`/users/${student.id}`, `Delete ${student.name}${projectNote}? This cannot be undone.`)
+  }
 
   return (
     <div className="student-row">
@@ -167,16 +193,27 @@ function StudentRow({ student, projects, onChanged }: { student: Student; projec
             projects.map((p) => (
               <div key={p.id} className="student-row__project-row">
                 <span>{p.title}</span>
-                <Button variant="tinted" size="small" onClick={() => setEditing(p)}>
-                  Edit project
-                </Button>
+                <div className="student-row__actions">
+                  <Button variant="tinted" size="small" disabled={busy} onClick={() => setEditing(p)}>
+                    Edit project
+                  </Button>
+                  <Button variant="destructive" size="small" disabled={busy} onClick={() => deleteProject(p)}>
+                    Delete
+                  </Button>
+                </div>
               </div>
             ))}
           {editing === null && (
-            <Button variant="tinted" size="small" onClick={() => setEditing('new')}>
-              + Add a project
-            </Button>
+            <div className="student-row__actions">
+              <Button variant="tinted" size="small" disabled={busy} onClick={() => setEditing('new')}>
+                + Add a project
+              </Button>
+              <Button variant="destructive" size="small" disabled={busy} onClick={deleteStudent}>
+                Delete student
+              </Button>
+            </div>
           )}
+          {error && <p className="students__error">{error}</p>}
           {editing !== null && (
             <ProjectForm
               students={[student]}

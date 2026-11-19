@@ -1,6 +1,7 @@
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { UploadsService } from '../uploads/uploads.service.js';
 import { ProjectType, Role } from '../generated/prisma/enums.js';
 import type { CreateProjectDto } from './dto/create-project.dto.js';
 import type { UpdateProjectDto } from './dto/update-project.dto.js';
@@ -64,7 +65,10 @@ function withRanking<T extends { id: string }>(
 
 @Injectable()
 export class ProjectsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private uploads: UploadsService,
+  ) {}
 
   async findAll() {
     const projects = await this.prisma.project.findMany({
@@ -112,11 +116,16 @@ export class ProjectsService {
   async update(id: string, dto: UpdateProjectDto, user: AuthenticatedUser) {
     const project = await this.assertExists(id);
     this.assertOwnership(project, user);
-    return this.prisma.project.update({
+    const updated = await this.prisma.project.update({
       where: { id },
       data: dto,
       include: { student: STUDENT_SELECT },
     });
+    if (dto.imageUrls) {
+      const kept = new Set(dto.imageUrls);
+      await this.uploads.deleteImages(project.imageUrls.filter((url) => !kept.has(url)));
+    }
+    return updated;
   }
 
   async remove(id: string, user: AuthenticatedUser) {
@@ -127,6 +136,7 @@ export class ProjectsService {
       this.prisma.like.deleteMany({ where: { projectId: id } }),
       this.prisma.project.delete({ where: { id } }),
     ]);
+    await this.uploads.deleteImages(project.imageUrls);
     return { id };
   }
 
@@ -157,10 +167,12 @@ export class ProjectsService {
     return { liked: true, likeCount: project.likeCount };
   }
 
-  async addComment(projectId: string, dto: CreateCommentDto) {
+  async addComment(projectId: string, dto: CreateCommentDto, user: AuthenticatedUser) {
     await this.assertExists(projectId);
+    const author = await this.prisma.user.findUnique({ where: { id: user.id }, select: { name: true } });
+    if (!author) throw new UnauthorizedException();
     return this.prisma.comment.create({
-      data: { projectId, authorName: dto.authorName, body: dto.body },
+      data: { projectId, authorId: user.id, authorName: author.name, body: dto.body },
     });
   }
 

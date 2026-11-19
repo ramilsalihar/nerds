@@ -55,6 +55,17 @@ export function Projects() {
 
   const formOpen = creating || editingProject !== null
 
+  async function deleteProject(project: Project) {
+    if (!window.confirm(`Delete "${project.title}"? Its likes, comments and images will be removed. This cannot be undone.`)) return
+    setError(null)
+    try {
+      await api(`/projects/${project.id}`, { method: 'DELETE', token })
+      loadProjects()
+    } catch (err) {
+      setError((err as Error).message)
+    }
+  }
+
   function closeForm() {
     setCreating(false)
     setEditingProject(null)
@@ -125,9 +136,14 @@ export function Projects() {
                     title={`#${p.rank} · ${p.title}`}
                     subtitle={`${PROJECT_TYPE_LABEL[p.type]} · ${p.student?.name ?? 'Unassigned'} · score ${p.score} · ${p.likeCount} likes · ${relativeTime(p.createdAt)}`}
                     trailing={
-                      <Button variant="tinted" size="small" onClick={() => setEditingProject(p)}>
-                        Edit
-                      </Button>
+                      <div className="projects-admin__row-actions">
+                        <Button variant="tinted" size="small" onClick={() => setEditingProject(p)}>
+                          Edit
+                        </Button>
+                        <Button variant="destructive" size="small" onClick={() => deleteProject(p)}>
+                          Delete
+                        </Button>
+                      </div>
                     }
                   />
                 ))}

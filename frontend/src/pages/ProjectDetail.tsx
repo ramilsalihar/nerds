@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Button, Card, TextField, Textarea } from '../components'
+import { Button, Card, Textarea } from '../components'
 import { api } from '../lib/api'
+import { useAuth } from '../lib/auth'
 import { relativeTime } from '../lib/format'
 import { getViewerToken, hasLiked, setLiked } from '../lib/viewer'
 import { PROJECT_TYPE_LABEL } from '../lib/types'
@@ -147,7 +148,7 @@ function Metric({ label, value }: { label: string; value: string | number }) {
 }
 
 function CommentForm({ projectId, onPosted }: { projectId: string; onPosted: () => void }) {
-  const [authorName, setAuthorName] = useState('')
+  const { user, token } = useAuth()
   const [body, setBody] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
@@ -156,7 +157,7 @@ function CommentForm({ projectId, onPosted }: { projectId: string; onPosted: () 
     setSubmitting(true)
     setError(null)
     try {
-      await api(`/projects/${projectId}/comments`, { method: 'POST', body: { authorName, body } })
+      await api(`/projects/${projectId}/comments`, { method: 'POST', token, body: { body } })
       setBody('')
       onPosted()
     } catch (err) {
@@ -166,12 +167,20 @@ function CommentForm({ projectId, onPosted }: { projectId: string; onPosted: () 
     }
   }
 
+  if (!user) {
+    return (
+      <p style={{ color: 'var(--label-secondary)' }}>
+        <Link to="/login">Log in</Link> to leave a comment.
+      </p>
+    )
+  }
+
   return (
     <div className="project-detail__comment-form">
-      <TextField id="comment-name" label="Your name" required value={authorName} onChange={(e) => setAuthorName(e.target.value)} />
+      <p className="project-detail__meta">Commenting as {user.name}</p>
       <Textarea id="comment-body" label="Comment" required rows={3} value={body} onChange={(e) => setBody(e.target.value)} />
       {error && <p className="project-detail__error">{error}</p>}
-      <Button variant="filled" disabled={submitting || !authorName || !body} onClick={submit}>
+      <Button variant="filled" disabled={submitting || !body} onClick={submit}>
         {submitting ? 'Posting…' : 'Post comment'}
       </Button>
     </div>

@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Button } from './Button'
+import { ImageUploadField } from './ImageUploadField'
 import { Switch } from './Switch'
 import { TextField } from './TextField'
 import { Textarea } from './Textarea'
@@ -26,7 +27,8 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
   const [repoUrl, setRepoUrl] = useState(project?.repoUrl ?? '')
   const [liveUrl, setLiveUrl] = useState(project?.liveUrl ?? '')
   const [videoUrl, setVideoUrl] = useState(project?.videoUrl ?? '')
-  const [imageUrls, setImageUrls] = useState((project?.imageUrls ?? []).join('\n'))
+  const [imageUrls, setImageUrls] = useState<string[]>(project?.imageUrls ?? [])
+  const [imagesBusy, setImagesBusy] = useState(false)
   const [type, setType] = useState<ProjectType>(project?.type ?? 'startup')
   const [deployed, setDeployed] = useState(project?.deployed ?? false)
   const [usersCount, setUsersCount] = useState(String(project?.usersCount ?? 0))
@@ -48,10 +50,7 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
         repoUrl: repoUrl || undefined,
         liveUrl: liveUrl || undefined,
         videoUrl: videoUrl || undefined,
-        imageUrls: imageUrls
-          .split('\n')
-          .map((s) => s.trim())
-          .filter(Boolean),
+        imageUrls,
         type,
         deployed,
         usersCount: Number(usersCount),
@@ -69,7 +68,7 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
         setRepoUrl('')
         setLiveUrl('')
         setVideoUrl('')
-        setImageUrls('')
+        setImageUrls([])
         setType('startup')
         setDeployed(false)
         setUsersCount('0')
@@ -126,18 +125,12 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
       </div>
       <TextField
         id="videoUrl"
-        label="Demo video link (YouTube/Loom, optional)"
+        label="Project overview video — YouTube link (optional)"
         type="url"
         value={videoUrl}
         onChange={(e) => setVideoUrl(e.target.value)}
       />
-      <Textarea
-        id="imageUrls"
-        label="Screenshot image URLs (one per line, optional)"
-        rows={3}
-        value={imageUrls}
-        onChange={(e) => setImageUrls(e.target.value)}
-      />
+      <ImageUploadField value={imageUrls} onChange={setImageUrls} max={8} onBusyChange={setImagesBusy} />
       <div className="project-form__field project-form__field--inline">
         <label className="project-form__label" htmlFor="deployed">
           Deployed
@@ -187,7 +180,7 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
       </div>
       {error && <p className="project-form__error">{error}</p>}
       <div className="project-form__actions">
-        <Button type="submit" variant="filled" disabled={submitting || !studentId}>
+        <Button type="submit" variant="filled" disabled={submitting || imagesBusy || !studentId}>
           {submitting ? 'Saving…' : isEdit ? 'Save changes' : 'Create project'}
         </Button>
         {onCancel && (
