@@ -2,7 +2,7 @@
 // GET /api/og?id=<projectId>&v=<updatedAt ms>  (v only busts caches)
 
 import { ImageResponse } from '@vercel/og'
-import { cloudinaryVariant, fetchShareSummary, SHOW_RANK_UP_TO, truncate, type ShareSummary } from './_lib/share'
+import { cloudinaryVariant, fetchShareSummary, SHOW_RANK_UP_TO, truncate, type ShareSummary } from './_lib/share.js'
 
 export const config = { runtime: 'edge' }
 
