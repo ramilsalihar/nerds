@@ -3,8 +3,16 @@ import { useNavigate } from 'react-router-dom'
 import { Card, PillFilter, ProjectCard } from '../components'
 import { api } from '../lib/api'
 import { tileFor } from '../lib/color'
-import type { Project } from '../lib/types'
+import type { Project, ProjectType } from '../lib/types'
 import './Dashboard.css'
+
+type TypeFilter = 'all' | ProjectType
+
+const TYPE_PILLS: { label: string; value: TypeFilter }[] = [
+  { label: 'All', value: 'all' },
+  { label: 'Startups', value: 'startup' },
+  { label: 'Outsource', value: 'outsource' },
+]
 
 type SortKey = 'score' | 'usersCount' | 'revenueAmount' | 'likeCount'
 
@@ -39,6 +47,7 @@ export function Dashboard({ search = '' }: { search?: string }) {
   const [projects, setProjects] = useState<Project[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [sortKey, setSortKey] = useState<SortKey>('score')
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
 
   useEffect(() => {
     api<Project[]>('/projects')
@@ -49,17 +58,18 @@ export function Dashboard({ search = '' }: { search?: string }) {
   const ranked = useMemo(() => {
     if (!projects) return []
     const query = search.trim().toLowerCase()
+    const ofType = typeFilter === 'all' ? projects : projects.filter((p) => p.type === typeFilter)
     const filtered = query
-      ? projects.filter(
+      ? ofType.filter(
           (p) =>
             p.title.toLowerCase().includes(query) ||
             p.description.toLowerCase().includes(query) ||
             p.student?.name.toLowerCase().includes(query),
         )
-      : projects
+      : ofType
     const sorted = [...filtered].sort((a, b) => Number(b[sortKey]) - Number(a[sortKey]))
     return sorted.map((p, i) => ({ ...p, rank: i + 1 }))
-  }, [projects, search, sortKey])
+  }, [projects, search, sortKey, typeFilter])
 
   if (error) {
     return (
@@ -101,6 +111,7 @@ export function Dashboard({ search = '' }: { search?: string }) {
         </Card>
       </div>
 
+      <PillFilter options={TYPE_PILLS} value={typeFilter} onChange={setTypeFilter} />
       <PillFilter options={SORT_PILLS} value={sortKey} onChange={setSortKey} />
 
       {ranked.length === 0 && (

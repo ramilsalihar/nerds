@@ -1,4 +1,5 @@
-import { ArrayMaxSize, IsArray, IsBoolean, IsNumber, IsOptional, IsString, IsUrl, Max, Min } from 'class-validator';
+import { ArrayMaxSize, IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString, IsUrl, Max, Min } from 'class-validator';
+import { ProjectType } from '../../generated/prisma/enums.js';
 
 export class CreateProjectDto {
   @IsOptional()
@@ -28,6 +29,10 @@ export class CreateProjectDto {
   @ArrayMaxSize(8)
   @IsUrl({}, { each: true })
   imageUrls?: string[];
+
+  @IsOptional()
+  @IsEnum(ProjectType)
+  type?: ProjectType;
 
   @IsOptional()
   @IsBoolean()

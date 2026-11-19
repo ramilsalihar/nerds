@@ -4,6 +4,7 @@ import { Button, Card, TextField, Textarea } from '../components'
 import { api } from '../lib/api'
 import { relativeTime } from '../lib/format'
 import { getViewerToken, hasLiked, setLiked } from '../lib/viewer'
+import { PROJECT_TYPE_LABEL } from '../lib/types'
 import type { Comment, Project } from '../lib/types'
 import './ProjectDetail.css'
 
@@ -66,6 +67,7 @@ export function ProjectDetail() {
         <Card>
           <div className="project-detail__header">
             {project.rank && <span className="project-detail__rank">#{project.rank} on the leaderboard</span>}
+            <span className={`project-detail__type project-detail__type--${project.type}`}>{PROJECT_TYPE_LABEL[project.type]}</span>
             {project.deployed && <span className="project-detail__badge">Deployed</span>}
             <span className="project-detail__meta">Added {relativeTime(project.createdAt)}</span>
           </div>

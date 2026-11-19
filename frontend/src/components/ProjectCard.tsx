@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { tileFor } from '../lib/color'
 import { relativeTime } from '../lib/format'
+import { PROJECT_TYPE_LABEL } from '../lib/types'
 import type { Project } from '../lib/types'
 import './ProjectCard.css'
 
@@ -46,6 +47,7 @@ export function ProjectCard({ project, highlightLabel, highlightValue }: Project
         <span className="project-card__stat">
           <strong>{project.score}</strong> score
         </span>
+        <span className={`project-card__type project-card__type--${project.type}`}>{PROJECT_TYPE_LABEL[project.type]}</span>
         {project.deployed && <span className="project-card__badge">Deployed</span>}
         <span className="project-card__stat project-card__stat--muted">{relativeTime(project.createdAt)}</span>
       </div>

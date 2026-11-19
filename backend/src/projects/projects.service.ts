@@ -1,7 +1,7 @@
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { Role } from '../generated/prisma/enums.js';
+import { ProjectType, Role } from '../generated/prisma/enums.js';
 import type { CreateProjectDto } from './dto/create-project.dto.js';
 import type { UpdateProjectDto } from './dto/update-project.dto.js';
 import type { CreateCommentDto } from './dto/create-comment.dto.js';
@@ -14,28 +14,47 @@ interface AuthenticatedUser {
 
 const STUDENT_SELECT = { select: { id: true, name: true, avatarUrl: true } };
 
-// Composite leaderboard score — weights are a product decision, tune here.
-function scoreOf(project: {
+interface ScoreInput {
+  type: ProjectType;
   uiUxRating: number;
   functionalityRating: number;
   usersCount: number;
   revenueAmount: unknown;
   likeCount: number;
   deployed: boolean;
-}): number {
+}
+
+// Composite leaderboard score — weights are a product decision, tune here.
+// Startups are judged on traction (users + revenue). Outsource projects are
+// client work: the client owns the users, so we judge delivery quality and
+// what the client paid instead.
+const SCORE_WEIGHTS: Record<ProjectType, {
+  uiUx: number;
+  functionality: number;
+  users: number;
+  revenue: number;
+  like: number;
+  deployed: number;
+}> = {
+  [ProjectType.startup]: { uiUx: 8, functionality: 8, users: 15, revenue: 10, like: 2, deployed: 15 },
+  [ProjectType.outsource]: { uiUx: 12, functionality: 12, users: 0, revenue: 12, like: 2, deployed: 15 },
+};
+
+function scoreOf(project: ScoreInput): number {
+  const w = SCORE_WEIGHTS[project.type];
   const revenue = Number(project.revenueAmount);
   const raw =
-    project.uiUxRating * 8 +
-    project.functionalityRating * 8 +
-    Math.log10(project.usersCount + 1) * 15 +
-    Math.log10(revenue + 1) * 10 +
-    project.likeCount * 2 +
-    (project.deployed ? 15 : 0);
+    project.uiUxRating * w.uiUx +
+    project.functionalityRating * w.functionality +
+    Math.log10(project.usersCount + 1) * w.users +
+    Math.log10(revenue + 1) * w.revenue +
+    project.likeCount * w.like +
+    (project.deployed ? w.deployed : 0);
   return Math.round(raw * 10) / 10;
 }
 
 function withRanking<T extends { id: string }>(
-  projects: (T & Parameters<typeof scoreOf>[0])[],
+  projects: (T & ScoreInput)[],
 ) {
   const ranked = projects
     .map((p) => ({ ...p, score: scoreOf(p) }))
@@ -79,6 +98,7 @@ export class ProjectsService {
         liveUrl: dto.liveUrl,
         videoUrl: dto.videoUrl,
         imageUrls: dto.imageUrls ?? [],
+        type: dto.type ?? ProjectType.startup,
         deployed: dto.deployed ?? false,
         usersCount: dto.usersCount ?? 0,
         revenueAmount: dto.revenueAmount ?? 0,

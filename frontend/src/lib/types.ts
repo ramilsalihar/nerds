@@ -12,6 +12,13 @@ export interface Comment {
   createdAt: string
 }
 
+export type ProjectType = 'startup' | 'outsource'
+
+export const PROJECT_TYPE_LABEL: Record<ProjectType, string> = {
+  startup: 'Startup',
+  outsource: 'Outsource',
+}
+
 export interface Project {
   id: string
   studentId: string
@@ -21,6 +28,7 @@ export interface Project {
   liveUrl: string | null
   videoUrl: string | null
   imageUrls: string[]
+  type: ProjectType
   deployed: boolean
   usersCount: number
   revenueAmount: string
