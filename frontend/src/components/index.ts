@@ -1,5 +1,6 @@
 export { Button } from './Button'
 export { Card } from './Card'
+export { ImageUploadField } from './ImageUploadField'
 export { List, ListRow } from './List'
 export { MetricChart } from './MetricChart'
 export type { ChartMetricKey } from './MetricChart'
