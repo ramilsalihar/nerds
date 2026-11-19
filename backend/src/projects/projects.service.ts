@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { UploadsService } from '../uploads/uploads.service.js';
@@ -167,10 +167,12 @@ export class ProjectsService {
     return { liked: true, likeCount: project.likeCount };
   }
 
-  async addComment(projectId: string, dto: CreateCommentDto) {
+  async addComment(projectId: string, dto: CreateCommentDto, user: AuthenticatedUser) {
     await this.assertExists(projectId);
+    const author = await this.prisma.user.findUnique({ where: { id: user.id }, select: { name: true } });
+    if (!author) throw new UnauthorizedException();
     return this.prisma.comment.create({
-      data: { projectId, authorName: dto.authorName, body: dto.body },
+      data: { projectId, authorId: user.id, authorName: author.name, body: dto.body },
     });
   }
 

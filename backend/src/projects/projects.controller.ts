@@ -57,8 +57,9 @@ export class ProjectsController {
     return this.projectsService.listComments(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(':id/comments')
-  addComment(@Param('id') id: string, @Body() dto: CreateCommentDto) {
-    return this.projectsService.addComment(id, dto);
+  addComment(@Param('id') id: string, @Body() dto: CreateCommentDto, @CurrentUser() user: AuthenticatedUser) {
+    return this.projectsService.addComment(id, dto, user);
   }
 }
