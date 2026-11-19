@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Button, Card, Textarea } from '../components'
+import { Button, Card, ShareButton, ShareCard, Textarea } from '../components'
 import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import { relativeTime } from '../lib/format'
@@ -11,6 +11,7 @@ import './ProjectDetail.css'
 
 export function ProjectDetail() {
   const { id } = useParams<{ id: string }>()
+  const { user } = useAuth()
   const [project, setProject] = useState<Project | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [liked, setLikedState] = useState(false)
@@ -61,6 +62,8 @@ export function ProjectDetail() {
       </Card>
     )
   }
+
+  const isOwner = !!user && user.id === project.studentId
 
   return (
     <div className="project-detail">
@@ -132,7 +135,17 @@ export function ProjectDetail() {
           <p className="project-detail__meta" style={{ marginTop: 8, textAlign: 'center' }}>
             {project.likeCount} {project.likeCount === 1 ? 'like' : 'likes'}
           </p>
+          {!isOwner && (
+            <div style={{ marginTop: 12 }}>
+              <ShareButton project={project} fullWidth />
+            </div>
+          )}
         </Card>
+        {isOwner && (
+          <Card>
+            <ShareCard project={project} />
+          </Card>
+        )}
       </div>
     </div>
   )

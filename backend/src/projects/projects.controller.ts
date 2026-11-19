@@ -23,6 +23,11 @@ export class ProjectsController {
     return this.projectsService.findAll();
   }
 
+  @Get(':id/share')
+  findShareSummary(@Param('id') id: string) {
+    return this.projectsService.findShareSummary(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.projectsService.findOne(id);
