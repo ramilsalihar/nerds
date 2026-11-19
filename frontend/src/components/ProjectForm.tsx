@@ -19,7 +19,8 @@ interface ProjectFormProps {
 }
 
 export function ProjectForm({ students, project, lockStudent = false, onSuccess, onCancel }: ProjectFormProps) {
-  const { token } = useAuth()
+  const { token, user } = useAuth()
+  const isAdmin = user?.role === 'admin'
   const isEdit = !!project
   const [studentId, setStudentId] = useState(project?.studentId ?? students[0]?.id ?? '')
   const [title, setTitle] = useState(project?.title ?? '')
@@ -52,11 +53,12 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
         videoUrl: videoUrl || undefined,
         imageUrls,
         type,
-        deployed,
         usersCount: Number(usersCount),
         revenueAmount: Number(revenueAmount),
-        uiUxRating: Number(uiUxRating),
-        functionalityRating: Number(functionalityRating),
+        // Ratings and deployment status are set by an admin only.
+        ...(isAdmin
+          ? { deployed, uiUxRating: Number(uiUxRating), functionalityRating: Number(functionalityRating) }
+          : {}),
       }
       const result = isEdit
         ? await api<Project>(`/projects/${project!.id}`, { method: 'PATCH', token, body })
@@ -131,12 +133,14 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
         onChange={(e) => setVideoUrl(e.target.value)}
       />
       <ImageUploadField value={imageUrls} onChange={setImageUrls} max={8} onBusyChange={setImagesBusy} />
-      <div className="project-form__field project-form__field--inline">
-        <label className="project-form__label" htmlFor="deployed">
-          Deployed
-        </label>
-        <Switch checked={deployed} onChange={setDeployed} label="Deployed" />
-      </div>
+      {isAdmin && (
+        <div className="project-form__field project-form__field--inline">
+          <label className="project-form__label" htmlFor="deployed">
+            Deployed
+          </label>
+          <Switch checked={deployed} onChange={setDeployed} label="Deployed" />
+        </div>
+      )}
       <div className="project-form__row">
         <TextField
           id="usersCount"
@@ -156,28 +160,36 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
           onChange={(e) => setRevenueAmount(e.target.value)}
         />
       </div>
-      <div className="project-form__row">
-        <TextField
-          id="uiUxRating"
-          label="UI/UX rating (0-5)"
-          type="number"
-          min={0}
-          max={5}
-          step="0.1"
-          value={uiUxRating}
-          onChange={(e) => setUiUxRating(e.target.value)}
-        />
-        <TextField
-          id="functionalityRating"
-          label="Functionality rating (0-5)"
-          type="number"
-          min={0}
-          max={5}
-          step="0.1"
-          value={functionalityRating}
-          onChange={(e) => setFunctionalityRating(e.target.value)}
-        />
-      </div>
+      {isAdmin ? (
+        <div className="project-form__row">
+          <TextField
+            id="uiUxRating"
+            label="UI/UX rating (0-5)"
+            type="number"
+            min={0}
+            max={5}
+            step="0.1"
+            value={uiUxRating}
+            onChange={(e) => setUiUxRating(e.target.value)}
+          />
+          <TextField
+            id="functionalityRating"
+            label="Functionality rating (0-5)"
+            type="number"
+            min={0}
+            max={5}
+            step="0.1"
+            value={functionalityRating}
+            onChange={(e) => setFunctionalityRating(e.target.value)}
+          />
+        </div>
+      ) : (
+        <p className="project-form__hint">
+          {isEdit
+            ? `Set by an admin: UI/UX ${project!.uiUxRating} · Functionality ${project!.functionalityRating} · ${project!.deployed ? 'Deployed' : 'Not deployed'}`
+            : 'An admin will rate UI/UX and functionality and mark the project as deployed.'}
+        </p>
+      )}
       {error && <p className="project-form__error">{error}</p>}
       <div className="project-form__actions">
         <Button type="submit" variant="filled" disabled={submitting || imagesBusy || !studentId}>
