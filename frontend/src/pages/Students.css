@@ -143,3 +143,9 @@
   font-size: 13px;
   color: var(--label-primary);
 }
+
+.student-row__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}

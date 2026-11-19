@@ -1,6 +1,7 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { UploadsService } from '../uploads/uploads.service.js';
 import { Role, UserStatus } from '../generated/prisma/enums.js';
 import type { CreateStudentDto } from './dto/create-student.dto.js';
 import type { UpdateProfileDto } from './dto/update-profile.dto.js';
@@ -21,7 +22,10 @@ const SAFE_USER_SELECT = {
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private uploads: UploadsService,
+  ) {}
 
   async findOne(id: string) {
     const user = await this.prisma.user.findUnique({ where: { id }, select: SAFE_USER_SELECT });
@@ -94,5 +98,29 @@ export class UsersService {
       },
       select: SAFE_USER_SELECT,
     });
+  }
+
+  // Deletes a student together with their projects (and those projects' likes,
+  // comments and images). Comments the student left on other projects are kept
+  // under their stored authorName but detached from the account.
+  async remove(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      include: { projects: { select: { id: true, imageUrls: true } } },
+    });
+    if (!user) throw new NotFoundException('User not found');
+    if (user.role !== Role.student) throw new ForbiddenException('Only student accounts can be deleted');
+
+    const projectIds = user.projects.map((p) => p.id);
+    await this.prisma.$transaction([
+      this.prisma.comment.deleteMany({ where: { projectId: { in: projectIds } } }),
+      this.prisma.like.deleteMany({ where: { projectId: { in: projectIds } } }),
+      this.prisma.project.deleteMany({ where: { studentId: id } }),
+      this.prisma.comment.updateMany({ where: { authorId: id }, data: { authorId: null } }),
+      this.prisma.studentProfile.deleteMany({ where: { userId: id } }),
+      this.prisma.user.delete({ where: { id } }),
+    ]);
+    await this.uploads.deleteImages(user.projects.flatMap((p) => p.imageUrls));
+    return { id };
   }
 }
