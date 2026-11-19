@@ -67,17 +67,6 @@
   flex-wrap: wrap;
 }
 
-.image-upload__url {
-  flex: 1;
-  min-width: 160px;
-  font-family: var(--font-sans);
-  font-size: 14px;
-  color: var(--label-primary);
-  background: var(--bg-grouped-secondary);
-  border: 1px solid var(--separator);
-  border-radius: var(--radius-sm);
-  padding: 6px 10px;
-}
 
 .image-upload__hint,
 .image-upload__error {

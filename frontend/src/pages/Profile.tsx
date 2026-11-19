@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Card, ProjectForm, TextField, Textarea } from '../components'
+import { Button, Card, ImageUploadField, ProjectForm, TextField, Textarea } from '../components'
 import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import type { Project, Student } from '../lib/types'
@@ -85,6 +85,7 @@ function ProfileForm({ student, onSaved }: { student: Student; onSaved: () => vo
   const { token } = useAuth()
   const [bio, setBio] = useState(student.bio ?? '')
   const [avatarUrl, setAvatarUrl] = useState(student.avatarUrl ?? '')
+  const [avatarBusy, setAvatarBusy] = useState(false)
   const [className, setClassName] = useState(student.className ?? '')
   const [graduationYear, setGraduationYear] = useState(String(student.graduationYear ?? ''))
   const [skills, setSkills] = useState((student.studentProfile?.skills ?? []).join(', '))
@@ -103,7 +104,7 @@ function ProfileForm({ student, onSaved }: { student: Student; onSaved: () => vo
         token,
         body: {
           bio: bio || undefined,
-          avatarUrl: avatarUrl || undefined,
+          avatarUrl: avatarUrl || null,
           className: className || undefined,
           graduationYear: graduationYear ? Number(graduationYear) : undefined,
           skills: skills
@@ -131,7 +132,13 @@ function ProfileForm({ student, onSaved }: { student: Student; onSaved: () => vo
         Contact email (shown to viewers): <strong>{student.email}</strong>
       </p>
       <Textarea id="bio" label="Bio" rows={3} value={bio} onChange={(e) => setBio(e.target.value)} />
-      <TextField id="avatarUrl" label="Avatar image URL (optional)" type="url" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} />
+      <ImageUploadField
+        label="Avatar"
+        value={avatarUrl ? [avatarUrl] : []}
+        onChange={(urls) => setAvatarUrl(urls[0] ?? '')}
+        max={1}
+        onBusyChange={setAvatarBusy}
+      />
       <div className="profile__row">
         <TextField id="className" label="Class / cohort" value={className} onChange={(e) => setClassName(e.target.value)} />
         <TextField
@@ -154,7 +161,7 @@ function ProfileForm({ student, onSaved }: { student: Student; onSaved: () => vo
       {error && <p className="profile__error">{error}</p>}
       {success && <p className="profile__success">Saved.</p>}
       <div>
-        <Button variant="filled" disabled={submitting} onClick={submit}>
+        <Button variant="filled" disabled={submitting || avatarBusy} onClick={submit}>
           {submitting ? 'Saving…' : 'Save profile'}
         </Button>
       </div>

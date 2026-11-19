@@ -9,14 +9,14 @@ interface ImageUploadFieldProps {
   value: string[]
   onChange: (urls: string[]) => void
   max: number
+  label?: string
   onBusyChange?: (busy: boolean) => void
 }
 
-export function ImageUploadField({ value, onChange, max, onBusyChange }: ImageUploadFieldProps) {
+export function ImageUploadField({ value, onChange, max, label = 'Screenshots', onBusyChange }: ImageUploadFieldProps) {
   const { token } = useAuth()
   const fileInput = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(0)
-  const [urlDraft, setUrlDraft] = useState('')
   const [error, setError] = useState<string | null>(null)
   const remaining = max - value.length - uploading
 
@@ -59,33 +59,17 @@ export function ImageUploadField({ value, onChange, max, onBusyChange }: ImageUp
     if (uploaded.length) onChange([...value, ...uploaded])
   }
 
-  function addUrl() {
-    const url = urlDraft.trim()
-    if (!url) return
-    try {
-      new URL(url)
-    } catch {
-      setError('That doesn’t look like a valid URL.')
-      return
-    }
-    if (value.includes(url)) {
-      setError('That image is already added.')
-      return
-    }
-    setError(null)
-    onChange([...value, url])
-    setUrlDraft('')
-  }
-
   return (
     <div className="image-upload">
-      <span className="image-upload__label">Screenshots ({value.length}/{max})</span>
+      <span className="image-upload__label">
+        {label} ({value.length}/{max})
+      </span>
       {(value.length > 0 || uploading > 0) && (
         <ul className="image-upload__grid">
           {value.map((url, i) => (
             <li key={url} className="image-upload__item">
-              <img src={url} alt={`Screenshot ${i + 1}`} />
-              <button type="button" className="image-upload__remove" aria-label={`Remove screenshot ${i + 1}`} onClick={() => onChange(value.filter((u) => u !== url))}>
+              <img src={url} alt={`${label} ${i + 1}`} />
+              <button type="button" className="image-upload__remove" aria-label={`Remove ${label.toLowerCase()} ${i + 1}`} onClick={() => onChange(value.filter((u) => u !== url))}>
                 ×
               </button>
             </li>
@@ -101,24 +85,6 @@ export function ImageUploadField({ value, onChange, max, onBusyChange }: ImageUp
       <div className="image-upload__actions">
         <Button type="button" variant="tinted" size="small" disabled={remaining <= 0} onClick={() => fileInput.current?.click()}>
           Upload images
-        </Button>
-        <input
-          className="image-upload__url"
-          type="url"
-          placeholder="…or paste an image URL"
-          aria-label="Image URL"
-          value={urlDraft}
-          disabled={remaining <= 0}
-          onChange={(e) => setUrlDraft(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault()
-              addUrl()
-            }
-          }}
-        />
-        <Button type="button" variant="plain" size="small" disabled={remaining <= 0 || !urlDraft.trim()} onClick={addUrl}>
-          Add
         </Button>
       </div>
       <p className="image-upload__hint">JPEG, PNG or WebP, up to 5 MB. Images are resized to 1600px.</p>

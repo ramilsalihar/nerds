@@ -125,7 +125,7 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
       </div>
       <TextField
         id="videoUrl"
-        label="Demo video link (YouTube/Loom, optional)"
+        label="Project overview video — YouTube link (optional)"
         type="url"
         value={videoUrl}
         onChange={(e) => setVideoUrl(e.target.value)}
