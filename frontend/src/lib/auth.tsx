@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import { api } from './api'
+import { api, UNAUTHORIZED_EVENT } from './api'
 
 export type Role = 'student' | 'admin'
 
@@ -37,6 +37,7 @@ function decodeToken(token: string): User | null {
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
     const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=')
     const payload = JSON.parse(decodeURIComponent(escape(atob(padded))))
+    if (typeof payload.exp === 'number' && payload.exp * 1000 <= Date.now()) return null
     return { id: payload.sub, email: payload.email, role: payload.role, name: payload.name ?? payload.email }
   } catch {
     return null
@@ -54,6 +55,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (state.token) localStorage.setItem('token', state.token)
     else localStorage.removeItem('token')
   }, [state.token])
+
+  // Backend rejected our token (expired / secret rotated): drop it so ProtectedRoute sends user to /login.
+  useEffect(() => {
+    const onUnauthorized = () => setState({ token: null, user: null })
+    window.addEventListener(UNAUTHORIZED_EVENT, onUnauthorized)
+    return () => window.removeEventListener(UNAUTHORIZED_EVENT, onUnauthorized)
+  }, [])
 
   async function login(email: string, password: string) {
     const { accessToken } = await api<{ accessToken: string }>('/auth/login', {
