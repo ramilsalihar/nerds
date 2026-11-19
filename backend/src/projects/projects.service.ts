@@ -37,8 +37,10 @@ const SCORE_WEIGHTS: Record<ProjectType, {
   like: number;
   deployed: number;
 }> = {
-  [ProjectType.startup]: { uiUx: 8, functionality: 8, users: 15, revenue: 10, like: 2, deployed: 15 },
-  [ProjectType.outsource]: { uiUx: 12, functionality: 12, users: 0, revenue: 12, like: 2, deployed: 15 },
+  // Paying users are much harder to win for a startup than a client invoice,
+  // so startup revenue weighs more than outsource revenue.
+  [ProjectType.startup]: { uiUx: 8, functionality: 8, users: 15, revenue: 15, like: 2, deployed: 15 },
+  [ProjectType.outsource]: { uiUx: 12, functionality: 12, users: 0, revenue: 8, like: 2, deployed: 15 },
 };
 
 function scoreOf(project: ScoreInput): number {
@@ -61,6 +63,17 @@ function withRanking<T extends { id: string }>(
     .map((p) => ({ ...p, score: scoreOf(p) }))
     .sort((a, b) => b.score - a.score);
   return ranked.map((p, index) => ({ ...p, rank: index + 1 }));
+}
+
+// Fields only an admin may set. Students can report users and revenue, but
+// ratings and deployment status are assessed by an admin.
+const ADMIN_ONLY_FIELDS = ['uiUxRating', 'functionalityRating', 'deployed'] as const;
+
+function withoutAdminOnlyFields<T extends object>(dto: T, user: AuthenticatedUser): T {
+  if (user.role === Role.admin) return dto;
+  const copy = { ...dto } as Record<string, unknown>;
+  for (const field of ADMIN_ONLY_FIELDS) delete copy[field];
+  return copy as T;
 }
 
 @Injectable()
@@ -142,7 +155,8 @@ export class ProjectsService {
     };
   }
 
-  create(dto: CreateProjectDto, user: AuthenticatedUser) {
+  create(input: CreateProjectDto, user: AuthenticatedUser) {
+    const dto = withoutAdminOnlyFields(input, user);
     const studentId = user.role === Role.admin ? dto.studentId : user.id;
     if (!studentId) throw new BadRequestException('studentId is required');
 
@@ -166,9 +180,10 @@ export class ProjectsService {
     });
   }
 
-  async update(id: string, dto: UpdateProjectDto, user: AuthenticatedUser) {
+  async update(id: string, input: UpdateProjectDto, user: AuthenticatedUser) {
     const project = await this.assertExists(id);
     this.assertOwnership(project, user);
+    const dto = withoutAdminOnlyFields(input, user);
     const updated = await this.prisma.project.update({
       where: { id },
       data: dto,
