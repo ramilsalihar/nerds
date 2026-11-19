@@ -32,3 +32,19 @@ export async function api<T>(path: string, { method = 'GET', body, token }: ApiO
 
   return data as T
 }
+
+// Multipart upload: let the browser set the Content-Type boundary.
+export async function uploadImage(file: Blob, token: string | null): Promise<{ url: string }> {
+  const form = new FormData()
+  form.append('file', file, 'image.webp')
+  const res = await fetch(`${API_URL}/uploads/image`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: form,
+  })
+  const text = await res.text()
+  const data = text ? JSON.parse(text) : undefined
+  if (res.status === 401 && token) window.dispatchEvent(new Event(UNAUTHORIZED_EVENT))
+  if (!res.ok) throw new Error(data?.message ?? res.statusText)
+  return data as { url: string }
+}
