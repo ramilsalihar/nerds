@@ -132,7 +132,7 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
         value={videoUrl}
         onChange={(e) => setVideoUrl(e.target.value)}
       />
-      <ImageUploadField value={imageUrls} onChange={setImageUrls} max={8} onBusyChange={setImagesBusy} />
+      <ImageUploadField firstImageIsPreview value={imageUrls} onChange={setImageUrls} max={8} onBusyChange={setImagesBusy} />
       {isAdmin && (
         <div className="project-form__field project-form__field--inline">
           <label className="project-form__label" htmlFor="deployed">

@@ -10,10 +10,11 @@ interface ImageUploadFieldProps {
   onChange: (urls: string[]) => void
   max: number
   label?: string
+  firstImageIsPreview?: boolean
   onBusyChange?: (busy: boolean) => void
 }
 
-export function ImageUploadField({ value, onChange, max, label = 'Screenshots', onBusyChange }: ImageUploadFieldProps) {
+export function ImageUploadField({ value, onChange, max, label = 'Screenshots', firstImageIsPreview = false, onBusyChange }: ImageUploadFieldProps) {
   const { token } = useAuth()
   const fileInput = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(0)
@@ -64,12 +65,16 @@ export function ImageUploadField({ value, onChange, max, label = 'Screenshots', 
       <span className="image-upload__label">
         {label} ({value.length}/{max})
       </span>
+      {firstImageIsPreview && (
+        <p className="image-upload__hint">The first image you upload will be your project's preview on the dashboard. If you remove it, the next image becomes the preview.</p>
+      )}
       {(value.length > 0 || uploading > 0) && (
         <ul className="image-upload__grid">
           {value.map((url, i) => (
             <li key={url} className="image-upload__item">
               <img src={url} alt={`${label} ${i + 1}`} />
-              <button type="button" className="image-upload__remove" aria-label={`Remove ${label.toLowerCase()} ${i + 1}`} onClick={() => onChange(value.filter((u) => u !== url))}>
+              {firstImageIsPreview && i === 0 && <span className="image-upload__preview">Preview image</span>}
+              <button type="button" disabled={uploading > 0} className="image-upload__remove" aria-label={`Remove ${label.toLowerCase()} ${i + 1}`} onClick={() => onChange(value.filter((u) => u !== url))}>
                 ×
               </button>
             </li>
@@ -83,7 +88,7 @@ export function ImageUploadField({ value, onChange, max, label = 'Screenshots', 
       )}
       <input ref={fileInput} type="file" accept={ACCEPTED_IMAGE_TYPES.join(',')} multiple hidden onChange={handleFiles} />
       <div className="image-upload__actions">
-        <Button type="button" variant="tinted" size="small" disabled={remaining <= 0} onClick={() => fileInput.current?.click()}>
+        <Button type="button" variant="tinted" size="small" disabled={remaining <= 0 || uploading > 0} onClick={() => fileInput.current?.click()}>
           Upload images
         </Button>
       </div>

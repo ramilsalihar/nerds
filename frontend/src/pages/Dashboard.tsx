@@ -170,7 +170,11 @@ function PodiumSpot({
     >
       <div className="podium__medal">{place === 1 ? '🥇' : place === 2 ? '🥈' : '🥉'}</div>
       <div className="podium__tile" style={tileFor(project.id)}>
-        {project.title.charAt(0).toUpperCase()}
+        {project.imageUrls[0] ? (
+            <img src={project.imageUrls[0]} alt={`${project.title} preview`} />
+          ) : (
+            project.title.charAt(0).toUpperCase()
+          )}
       </div>
       <h3 className="podium__title">{project.title}</h3>
       {project.student && (
