@@ -154,3 +154,14 @@
   color: var(--color-orange-strong);
   background: color-mix(in srgb, var(--color-orange-strong) 14%, transparent);
 }
+
+.project-card__tile {
+  overflow: hidden;
+}
+
+.project-card__tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

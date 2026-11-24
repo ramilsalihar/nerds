@@ -18,7 +18,11 @@ export function ProjectCard({ project, highlightLabel, highlightValue }: Project
     <Link to={`/projects/${project.id}`} className="project-card">
       <div className="project-card__top">
         <div className="project-card__tile" style={tileFor(project.id)}>
-          {project.title.charAt(0).toUpperCase()}
+          {project.imageUrls[0] ? (
+            <img src={project.imageUrls[0]} alt={`${project.title} preview`} />
+          ) : (
+            project.title.charAt(0).toUpperCase()
+          )}
         </div>
         {project.rank && <span className="project-card__rank">#{project.rank}</span>}
       </div>
