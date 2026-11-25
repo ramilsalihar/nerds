@@ -40,3 +40,10 @@
   min-height: 88px;
   line-height: 1.4;
 }
+
+
+.ds-field,
+.ds-field__input {
+  min-width: 0;
+  width: 100%;
+}

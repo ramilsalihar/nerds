@@ -184,3 +184,27 @@
   color: var(--brand-primary);
   text-align: center;
 }
+
+
+.share-card__captions {
+  min-width: 0;
+}
+
+.share-card__caption {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px), (pointer: coarse) {
+  .share__copy,
+  .share__platform,
+  .share-card__download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .share__platforms {
+    gap: 8px;
+  }
+}

@@ -58,3 +58,13 @@
   display: flex;
   gap: 8px;
 }
+
+
+.projects-admin__section-header,
+.projects-admin__row-actions {
+  flex-wrap: wrap;
+}
+
+.projects-admin__section-title {
+  overflow-wrap: anywhere;
+}

@@ -174,3 +174,88 @@
   height: 100%;
   object-fit: cover;
 }
+
+
+.dashboard__grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+}
+
+.podium__spot {
+  min-width: 0;
+}
+
+.podium__title,
+.podium__student,
+.dashboard__stat-value {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+  .dashboard {
+    gap: 20px;
+  }
+
+  .dashboard__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .dashboard__stat {
+    padding: 16px;
+  }
+
+  .dashboard__stat-value {
+    font-size: 1.375rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .podium {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .podium__spot {
+    order: initial;
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) 28px;
+    grid-template-rows: auto auto auto;
+    column-gap: 12px;
+    row-gap: 4px;
+    padding: 16px;
+    text-align: left;
+    align-items: center;
+  }
+
+  .podium__tile {
+    grid-column: 1;
+    grid-row: 1 / 4;
+    width: 64px;
+    height: 64px;
+  }
+
+  .podium__medal {
+    grid-column: 3;
+    grid-row: 1 / 4;
+    font-size: 24px;
+  }
+
+  .podium__title {
+    grid-area: 1 / 2;
+    font-size: 1rem;
+  }
+
+  .podium__student {
+    grid-area: 2 / 2;
+    font-size: 0.8125rem;
+  }
+
+  .podium__score {
+    grid-area: 3 / 2;
+    font-size: 0.875rem;
+  }
+
+  .project-card__title {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}

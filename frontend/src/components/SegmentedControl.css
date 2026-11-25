@@ -37,3 +37,11 @@
 .ds-segmented__item--active {
   opacity: 1;
 }
+
+
+@media (max-width: 767px), (pointer: coarse) {
+  .ds-segmented__item {
+    min-height: 44px;
+    padding-inline: 8px;
+  }
+}

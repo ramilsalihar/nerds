@@ -92,3 +92,13 @@
   color: var(--label-secondary);
   margin: 2px 0 0;
 }
+
+
+.settings__account > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.settings__row {
+  flex-wrap: wrap;
+}

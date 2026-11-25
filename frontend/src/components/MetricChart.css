@@ -54,3 +54,30 @@
   color: var(--label-primary);
   text-align: right;
 }
+
+
+@media (max-width: 767px) {
+  .metric-chart {
+    padding: 12px;
+  }
+
+  .metric-chart__row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 12px;
+  }
+
+  .metric-chart__name {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .metric-chart__value {
+    grid-area: 1 / 2;
+    overflow-wrap: anywhere;
+  }
+
+  .metric-chart__track {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}

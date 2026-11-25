@@ -28,3 +28,11 @@
   color: var(--color-pink-strong);
   border-color: color-mix(in srgb, var(--color-pink-strong) 35%, transparent);
 }
+
+
+@media (max-width: 767px), (pointer: coarse) {
+  .pill-filter__item {
+    min-height: 44px;
+    padding-inline: 14px;
+  }
+}

@@ -20,10 +20,11 @@ export default function App() {
 
   return (
     <div className="app-shell">
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <Sidebar />
       <div className="app-shell__main">
         <Topbar search={isDashboard ? search : undefined} onSearchChange={isDashboard ? setSearch : undefined} />
-        <div className="app-shell__content">
+        <main id="main-content" className="app-shell__content" tabIndex={-1}>
           <Routes>
             <Route path="/" element={<Dashboard search={search} />} />
             <Route path="/projects/:id" element={<ProjectDetail />} />
@@ -66,7 +67,7 @@ export default function App() {
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </div>
+        </main>
       </div>
     </div>
   )

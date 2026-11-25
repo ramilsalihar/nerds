@@ -13,6 +13,7 @@ export function Topbar({ search, onSearchChange }: TopbarProps) {
 
   return (
     <header className="topbar">
+      <Link to="/" className="topbar__brand" aria-label="Nerds dashboard">nerds<span>.</span></Link>
       {onSearchChange ? (
         <div className="topbar__search">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -20,14 +21,14 @@ export function Topbar({ search, onSearchChange }: TopbarProps) {
             <path d="m21 21-4.3-4.3" />
           </svg>
           <input
+            type="search"
+            aria-label="Search projects or students"
             placeholder="Search projects or students"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
           />
         </div>
-      ) : (
-        <span />
-      )}
+      ) : null}
 
       <div className="topbar__end">
         {user ? (

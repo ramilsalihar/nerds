@@ -50,7 +50,7 @@ export function Profile() {
       </Card>
 
       <Card>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <div className="profile__section-header">
           <h2 className="profile__section-title" style={{ margin: 0 }}>
             My projects
           </h2>

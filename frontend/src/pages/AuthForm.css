@@ -49,3 +49,16 @@
   color: var(--brand-primary);
   text-decoration: none;
 }
+
+
+@media (max-width: 767px) {
+  .auth-form {
+    margin: 8px auto;
+  }
+
+  .auth-form__switch a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}

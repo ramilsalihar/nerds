@@ -139,3 +139,28 @@
   border-radius: var(--radius-sm);
   border: 1px solid var(--separator);
 }
+
+
+.student-profile__header > div {
+  min-width: 0;
+}
+
+.student-profile__name,
+.student-profile__bio,
+.student-profile__project-title,
+.student-profile__project-desc {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+  .student-profile__header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .student-profile__project-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}

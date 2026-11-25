@@ -5,7 +5,7 @@ import './Sidebar.css'
 
 function Icon({ children, ...rest }: SVGProps<SVGSVGElement>) {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...rest}>
+    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" {...rest}>
       {children}
     </svg>
   )
@@ -60,7 +60,7 @@ export function Sidebar() {
 
   return (
     <div className="sidebar-rail">
-      <nav className="sidebar">
+      <nav className="sidebar" aria-label="Main navigation">
         <div className="sidebar__group">
           <div className="sidebar__logo-row">
             <div className="sidebar__logo">n</div>

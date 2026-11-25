@@ -85,3 +85,38 @@
 .profile__project-row:last-child {
   border-bottom: none;
 }
+
+
+.profile__row > * {
+  min-width: 0;
+}
+
+.profile__project-row {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.profile__project-row > a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+  .profile__row {
+    flex-direction: column;
+  }
+}
+
+.profile__section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.profile__project-row > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
