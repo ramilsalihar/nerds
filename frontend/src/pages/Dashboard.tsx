@@ -154,40 +154,45 @@ function PodiumSpot({
   metricVal: string | number
 }) {
   const navigate = useNavigate()
+  const image = project.imageUrls[0]
 
   return (
     <a
       href={`/projects/${project.id}`}
       className={`podium__spot podium__spot--${place}`}
+      style={image ? undefined : tileFor(project.id)}
       onClick={(e) => {
         e.preventDefault()
         navigate(`/projects/${project.id}`)
       }}
     >
-      <div className="podium__medal" aria-label={`Rank ${place}`}>{place === 1 ? '🥇' : place === 2 ? '🥈' : '🥉'}</div>
-      <div className="podium__tile" style={tileFor(project.id)}>
-        {project.imageUrls[0] ? (
-            <img src={project.imageUrls[0]} alt={`${project.title} preview`} />
-          ) : (
-            project.title.charAt(0).toUpperCase()
-          )}
-      </div>
-      <h3 className="podium__title">{project.title}</h3>
-      {project.student && (
-        <p
-          className="podium__student"
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            navigate(`/students/${project.student!.id}`)
-          }}
-        >
-          by {project.student.name}
-        </p>
+      {image ? (
+        <img className="podium__bg" src={image} alt="" />
+      ) : (
+        <span className="podium__initial" aria-hidden="true">
+          {project.title.charAt(0).toUpperCase()}
+        </span>
       )}
-      <p className="podium__score">
-        {metricVal} {metricLabel.toLowerCase()}
-      </p>
+      <div className="podium__shade" aria-hidden="true" />
+      <div className="podium__medal" aria-label={`Rank ${place}`}>{place === 1 ? '🥇' : place === 2 ? '🥈' : '🥉'}</div>
+      <div className="podium__info">
+        <h3 className="podium__title">{project.title}</h3>
+        {project.student && (
+          <p
+            className="podium__student"
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              navigate(`/students/${project.student!.id}`)
+            }}
+          >
+            by {project.student.name}
+          </p>
+        )}
+        <p className="podium__score">
+          {metricVal} {metricLabel.toLowerCase()}
+        </p>
+      </div>
     </a>
   )
 }
