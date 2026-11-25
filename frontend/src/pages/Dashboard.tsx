@@ -122,13 +122,9 @@ export function Dashboard({ search = '' }: { search?: string }) {
 
       {top3.length > 0 && (
         <div className="podium">
-          {[top3[1], top3[0], top3[2]].map((project, i) =>
-            project ? (
-              <PodiumSpot key={project.id} project={project} place={[2, 1, 3][i]} metricLabel={METRIC_LABEL[sortKey]} metricVal={metricValue(project, sortKey)} />
-            ) : (
-              <div key={`empty-${i}`} />
-            ),
-          )}
+          {top3.map((project, i) => (
+            <PodiumSpot key={project.id} project={project} place={i + 1} metricLabel={METRIC_LABEL[sortKey]} metricVal={metricValue(project, sortKey)} />
+          ))}
         </div>
       )}
 
@@ -168,7 +164,7 @@ function PodiumSpot({
         navigate(`/projects/${project.id}`)
       }}
     >
-      <div className="podium__medal">{place === 1 ? '🥇' : place === 2 ? '🥈' : '🥉'}</div>
+      <div className="podium__medal" aria-label={`Rank ${place}`}>{place === 1 ? '🥇' : place === 2 ? '🥈' : '🥉'}</div>
       <div className="podium__tile" style={tileFor(project.id)}>
         {project.imageUrls[0] ? (
             <img src={project.imageUrls[0]} alt={`${project.title} preview`} />

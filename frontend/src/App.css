@@ -20,14 +20,14 @@
   flex: 1;
 }
 
-@media (max-width: 640px) {
+
+@media (max-width: 767px) {
   .app-shell {
-    padding: 12px;
-    gap: 12px;
+    display: block;
+    padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) calc(96px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
   }
 
-  .sidebar-rail,
-  .sidebar {
-    width: 56px;
+  .app-shell__main {
+    gap: 24px;
   }
 }

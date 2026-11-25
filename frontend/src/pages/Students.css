@@ -149,3 +149,34 @@
   gap: 8px;
   flex-wrap: wrap;
 }
+
+
+.student-row__info {
+  overflow-wrap: anywhere;
+}
+
+.student-row__project-row {
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 767px) {
+  .student-row__summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 24px;
+    gap: 8px;
+  }
+
+  .student-row__info {
+    min-width: 0;
+  }
+
+  .student-row__projects {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .student-row__chevron {
+    grid-area: 1 / 2;
+  }
+}

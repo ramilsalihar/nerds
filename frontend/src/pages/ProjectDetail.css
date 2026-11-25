@@ -208,3 +208,42 @@
   color: var(--color-orange-strong);
   background: color-mix(in srgb, var(--color-orange-strong) 14%, transparent);
 }
+
+
+.project-detail__title,
+.project-detail__description,
+.project-detail__comment-body,
+.project-detail__metric-value {
+  overflow-wrap: anywhere;
+}
+
+.project-detail__links,
+.project-detail__comment-header {
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+@media (max-width: 767px) {
+  .project-detail__images {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+  }
+
+  .project-detail__images img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 8 / 5;
+  }
+
+  .project-detail__link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .project-detail__description,
+  .project-detail__comment-body {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}

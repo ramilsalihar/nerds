@@ -63,3 +63,24 @@
   flex-shrink: 0;
   color: var(--label-tertiary);
 }
+
+
+.ds-list-row__body {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+  .ds-list-row {
+    flex-wrap: wrap;
+    padding: 16px 4px;
+  }
+
+  .ds-list-row__body {
+    flex-basis: 100%;
+  }
+
+  .ds-list-row__trailing {
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+}
