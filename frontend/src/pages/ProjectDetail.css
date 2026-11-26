@@ -73,9 +73,12 @@
 }
 
 .project-detail__images img {
-  width: 160px;
-  height: 100px;
-  object-fit: cover;
+  display: block;
+  height: 120px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  background: var(--fill-tertiary);
   border-radius: var(--radius-sm);
   border: 1px solid var(--separator);
 }
@@ -233,6 +236,7 @@
     width: 100%;
     height: auto;
     aspect-ratio: 8 / 5;
+    object-fit: contain;
   }
 
   .project-detail__link {

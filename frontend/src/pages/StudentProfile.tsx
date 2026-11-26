@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Card, ProjectBlocksSkeleton, StudentProfileSkeleton } from '../components'
+import { Card, ImageGallery, ProjectBlocksSkeleton, StudentProfileSkeleton } from '../components'
 import { api } from '../lib/api'
 import { colorFor, initials } from '../lib/color'
 import type { Project, Student } from '../lib/types'
@@ -103,13 +103,7 @@ export function StudentProfile() {
                   </a>
                 )}
               </div>
-              {p.imageUrls.length > 0 && (
-                <div className="student-profile__images">
-                  {p.imageUrls.map((src) => (
-                    <img key={src} src={src} alt={`${p.title} screenshot`} />
-                  ))}
-                </div>
-              )}
+              <ImageGallery className="student-profile__images" images={p.imageUrls} alt={`${p.title} screenshot`} />
             </div>
           ))
         )}

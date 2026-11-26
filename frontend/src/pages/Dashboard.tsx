@@ -163,7 +163,10 @@ function PodiumSpot({
       }}
     >
       {image ? (
-        <img className="podium__bg" src={image} alt="" />
+        <>
+          <img className="podium__bg podium__bg--blur" src={image} alt="" />
+          <img className="podium__bg podium__bg--main" src={image} alt="" />
+        </>
       ) : (
         <span className="podium__initial" aria-hidden="true">
           {project.title.charAt(0).toUpperCase()}
