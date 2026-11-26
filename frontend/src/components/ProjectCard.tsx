@@ -19,7 +19,10 @@ export function ProjectCard({ project, highlightLabel, highlightValue }: Project
       <div className="project-card__top">
         <div className="project-card__tile" style={tileFor(project.id)}>
           {project.imageUrls[0] ? (
-            <img src={project.imageUrls[0]} alt={`${project.title} preview`} />
+            <>
+              <img className="project-card__tile-blur" src={project.imageUrls[0]} alt="" aria-hidden="true" />
+              <img className="project-card__tile-img" src={project.imageUrls[0]} alt={`${project.title} preview`} />
+            </>
           ) : (
             project.title.charAt(0).toUpperCase()
           )}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Button, Card, ProjectDetailSkeleton, ShareButton, ShareCard, Textarea } from '../components'
+import { Button, Card, ImageGallery, ProjectDetailSkeleton, ShareButton, ShareCard, Textarea } from '../components'
 import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import { relativeTime } from '../lib/format'
@@ -95,13 +95,7 @@ export function ProjectDetail() {
               </a>
             )}
           </div>
-          {project.imageUrls.length > 0 && (
-            <div className="project-detail__images">
-              {project.imageUrls.map((src) => (
-                <img key={src} src={src} alt={`${project.title} screenshot`} />
-              ))}
-            </div>
-          )}
+          <ImageGallery className="project-detail__images" images={project.imageUrls} alt={`${project.title} screenshot`} />
         </Card>
 
         <Card>

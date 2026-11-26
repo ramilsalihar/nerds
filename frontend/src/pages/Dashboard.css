@@ -124,7 +124,22 @@
   transition: transform 0.4s ease;
 }
 
-.podium__spot:hover .podium__bg {
+/* Blurred backdrop fills the bars around the uncropped main image. */
+.podium__bg--blur {
+  z-index: -3;
+  filter: blur(24px) saturate(1.2);
+  transform: scale(1.2);
+}
+
+/* Full image, nudged up so the bottom info text sits over the backdrop, not the image. */
+.podium__bg--main {
+  inset: 0 0 30%;
+  height: 70%;
+  padding: 12px 12px 0;
+  object-fit: contain;
+}
+
+.podium__spot:hover .podium__bg--main {
   transform: scale(1.04);
 }
 
