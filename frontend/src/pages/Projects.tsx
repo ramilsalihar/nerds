@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Button, Card, List, ListRow, MetricChart, PillFilter, ProjectForm } from '../components'
+import { Button, Card, List, ListRow, ListSkeleton, MetricChart, PillFilter, ProjectForm } from '../components'
 import type { ChartMetricKey } from '../components'
 import { metricValueOf } from '../components/MetricChart'
 import { api } from '../lib/api'
@@ -118,7 +118,7 @@ export function Projects() {
 
         {!formOpen && (
           sortedProjects === null ? (
-            <p style={{ color: 'var(--label-secondary)' }}>Loading…</p>
+            <ListSkeleton rows={5} actions={2} label="Loading projects…" />
           ) : sortedProjects.length === 0 ? (
             <p style={{ color: 'var(--label-secondary)' }}>No projects yet.</p>
           ) : (
