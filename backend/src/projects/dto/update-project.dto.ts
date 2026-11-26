@@ -1,4 +1,4 @@
-import { ArrayMaxSize, IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString, IsUrl, Max, Min } from 'class-validator';
+import { ArrayMaxSize, IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString, IsUrl, Min } from 'class-validator';
 import { ProjectType } from '../../generated/prisma/enums.js';
 
 export class UpdateProjectDto {
@@ -46,15 +46,5 @@ export class UpdateProjectDto {
   @Min(0)
   revenueAmount?: number;
 
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  @Max(5)
-  uiUxRating?: number;
 
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  @Max(5)
-  functionalityRating?: number;
 }

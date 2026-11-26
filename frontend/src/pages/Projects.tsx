@@ -14,8 +14,6 @@ const FILTER_PILLS: { label: string; value: ChartMetricKey }[] = [
   { label: 'Users', value: 'usersCount' },
   { label: 'Earned money', value: 'revenueAmount' },
   { label: 'Likes', value: 'likeCount' },
-  { label: 'UI/UX', value: 'uiUxRating' },
-  { label: 'Functionality', value: 'functionalityRating' },
 ]
 
 const FILTER_LABEL: Record<ChartMetricKey, string> = {
@@ -23,8 +21,6 @@ const FILTER_LABEL: Record<ChartMetricKey, string> = {
   usersCount: 'Users',
   revenueAmount: 'Earned money',
   likeCount: 'Likes',
-  uiUxRating: 'UI/UX',
-  functionalityRating: 'Functionality',
 }
 
 export function Projects() {

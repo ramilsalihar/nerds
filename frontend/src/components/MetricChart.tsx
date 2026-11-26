@@ -1,15 +1,13 @@
 import type { Project } from '../lib/types'
 import './MetricChart.css'
 
-export type ChartMetricKey = 'score' | 'usersCount' | 'revenueAmount' | 'likeCount' | 'uiUxRating' | 'functionalityRating'
+export type ChartMetricKey = 'score' | 'usersCount' | 'revenueAmount' | 'likeCount'
 
 const ACCESSORS: Record<ChartMetricKey, (p: Project) => number> = {
   score: (p) => p.score,
   usersCount: (p) => p.usersCount,
   revenueAmount: (p) => Number(p.revenueAmount),
   likeCount: (p) => p.likeCount,
-  uiUxRating: (p) => p.uiUxRating,
-  functionalityRating: (p) => p.functionalityRating,
 }
 
 export function metricValueOf(project: Project, metricKey: ChartMetricKey): number {
@@ -18,7 +16,6 @@ export function metricValueOf(project: Project, metricKey: ChartMetricKey): numb
 
 function formatValue(metricKey: ChartMetricKey, value: number): string {
   if (metricKey === 'revenueAmount') return `$${value.toLocaleString()}`
-  if (metricKey === 'uiUxRating' || metricKey === 'functionalityRating') return value.toFixed(1)
   return value.toLocaleString()
 }
 

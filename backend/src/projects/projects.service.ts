@@ -17,8 +17,6 @@ const STUDENT_SELECT = { select: { id: true, name: true, avatarUrl: true } };
 
 interface ScoreInput {
   type: ProjectType;
-  uiUxRating: number;
-  functionalityRating: number;
   usersCount: number;
   revenueAmount: unknown;
   likeCount: number;
@@ -27,28 +25,29 @@ interface ScoreInput {
 
 // Composite leaderboard score — weights are a product decision, tune here.
 // Startups are judged on traction (users + revenue). Outsource projects are
-// client work: the client owns the users, so we judge delivery quality and
-// what the client paid instead.
+// client work: the client owns the users, so only what the client paid counts.
+//
+// A startup dollar is far harder to earn than a client invoice, so startup
+// revenue is multiplied before scoring: $1 from a startup counts as
+// STARTUP_REVENUE_MULTIPLIER client dollars. Both types then share the same
+// revenue weight, which keeps one leaderboard comparable across types.
+const STARTUP_REVENUE_MULTIPLIER = 10;
+
 const SCORE_WEIGHTS: Record<ProjectType, {
-  uiUx: number;
-  functionality: number;
   users: number;
   revenue: number;
+  revenueMultiplier: number;
   like: number;
   deployed: number;
 }> = {
-  // Paying users are much harder to win for a startup than a client invoice,
-  // so startup revenue weighs more than outsource revenue.
-  [ProjectType.startup]: { uiUx: 8, functionality: 8, users: 15, revenue: 15, like: 2, deployed: 15 },
-  [ProjectType.outsource]: { uiUx: 12, functionality: 12, users: 0, revenue: 8, like: 2, deployed: 15 },
+  [ProjectType.startup]: { users: 15, revenue: 25, revenueMultiplier: STARTUP_REVENUE_MULTIPLIER, like: 2, deployed: 15 },
+  [ProjectType.outsource]: { users: 0, revenue: 25, revenueMultiplier: 1, like: 2, deployed: 15 },
 };
 
 function scoreOf(project: ScoreInput): number {
   const w = SCORE_WEIGHTS[project.type];
-  const revenue = Number(project.revenueAmount);
+  const revenue = Number(project.revenueAmount) * w.revenueMultiplier;
   const raw =
-    project.uiUxRating * w.uiUx +
-    project.functionalityRating * w.functionality +
     Math.log10(project.usersCount + 1) * w.users +
     Math.log10(revenue + 1) * w.revenue +
     project.likeCount * w.like +
@@ -66,8 +65,8 @@ function withRanking<T extends { id: string }>(
 }
 
 // Fields only an admin may set. Students can report users and revenue, but
-// ratings and deployment status are assessed by an admin.
-const ADMIN_ONLY_FIELDS = ['uiUxRating', 'functionalityRating', 'deployed'] as const;
+// deployment status is confirmed by an admin.
+const ADMIN_ONLY_FIELDS = ['deployed'] as const;
 
 function withoutAdminOnlyFields<T extends object>(dto: T, user: AuthenticatedUser): T {
   if (user.role === Role.admin) return dto;
@@ -107,8 +106,6 @@ export class ProjectsService {
       select: {
         id: true,
         type: true,
-        uiUxRating: true,
-        functionalityRating: true,
         usersCount: true,
         revenueAmount: true,
         likeCount: true,
@@ -131,8 +128,6 @@ export class ProjectsService {
         deployed: true,
         likeCount: true,
         updatedAt: true,
-        uiUxRating: true,
-        functionalityRating: true,
         usersCount: true,
         revenueAmount: true,
         student: STUDENT_SELECT,
@@ -173,8 +168,6 @@ export class ProjectsService {
         deployed: dto.deployed ?? false,
         usersCount: dto.usersCount ?? 0,
         revenueAmount: dto.revenueAmount ?? 0,
-        uiUxRating: dto.uiUxRating ?? 0,
-        functionalityRating: dto.functionalityRating ?? 0,
       },
       include: { student: STUDENT_SELECT },
     });
