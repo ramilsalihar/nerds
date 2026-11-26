@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Card, ImageUploadField, ProjectForm, ShareButton, ShareCard, TextField, Textarea } from '../components'
+import { Button, Card, FormSkeleton, ImageUploadField, ListSkeleton, ProjectForm, ShareButton, ShareCard, TextField, Textarea } from '../components'
 import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import type { Project, Student } from '../lib/types'
@@ -46,7 +46,7 @@ export function Profile() {
 
       <Card>
         <h2 className="profile__section-title">Profile details</h2>
-        {student ? <ProfileForm student={student} onSaved={load} /> : <p style={{ color: 'var(--label-secondary)' }}>Loading…</p>}
+        {student ? <ProfileForm student={student} onSaved={load} /> : <FormSkeleton fields={5} label="Loading profile…" />}
       </Card>
 
       <Card>
@@ -60,6 +60,8 @@ export function Profile() {
             </Button>
           )}
         </div>
+
+        {editingProject === null && projects === null && <ListSkeleton rows={2} actions={2} label="Loading projects…" />}
 
         {editingProject === null && projects && (
           <div className="profile__project-list">

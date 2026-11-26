@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, PillFilter, ProjectCard } from '../components'
+import { Card, DashboardSkeleton, PillFilter, ProjectCard } from '../components'
 import { api } from '../lib/api'
 import { tileFor } from '../lib/color'
 import type { Project, ProjectType } from '../lib/types'
@@ -80,11 +80,7 @@ export function Dashboard({ search = '' }: { search?: string }) {
   }
 
   if (!projects) {
-    return (
-      <Card>
-        <p style={{ margin: 0, color: 'var(--label-secondary)' }}>Loading…</p>
-      </Card>
-    )
+    return <DashboardSkeleton />
   }
 
   const top3 = ranked.slice(0, 3)

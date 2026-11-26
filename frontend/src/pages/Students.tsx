@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Card, ProjectForm, TextField } from '../components'
+import { Button, Card, ListSkeleton, ProjectForm, TextField } from '../components'
 import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import type { Project, Student } from '../lib/types'
@@ -62,7 +62,7 @@ export function Students() {
       <Card>
         <h2 className="students__section-title">All students</h2>
         {students === null || projects === null ? (
-          <p style={{ color: 'var(--label-secondary)' }}>Loading…</p>
+          <ListSkeleton rows={5} avatar actions={2} label="Loading students…" />
         ) : decided.length === 0 ? (
           <p style={{ color: 'var(--label-secondary)' }}>No students yet — add one above.</p>
         ) : (

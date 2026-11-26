@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Card } from '../components'
+import { Card, ProjectBlocksSkeleton, StudentProfileSkeleton } from '../components'
 import { api } from '../lib/api'
 import { colorFor, initials } from '../lib/color'
 import type { Project, Student } from '../lib/types'
@@ -29,11 +29,7 @@ export function StudentProfile() {
   }
 
   if (!student) {
-    return (
-      <Card>
-        <p style={{ margin: 0, color: 'var(--label-secondary)' }}>Loading…</p>
-      </Card>
-    )
+    return <StudentProfileSkeleton />
   }
 
   const skills = student.studentProfile?.skills ?? []
@@ -82,7 +78,7 @@ export function StudentProfile() {
       <Card>
         <h2 className="student-profile__section-title">Projects</h2>
         {projects === null ? (
-          <p style={{ color: 'var(--label-secondary)' }}>Loading…</p>
+          <ProjectBlocksSkeleton />
         ) : projects.length === 0 ? (
           <p style={{ color: 'var(--label-secondary)' }}>No projects published yet.</p>
         ) : (

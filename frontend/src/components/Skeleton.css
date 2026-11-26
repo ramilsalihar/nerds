@@ -1,0 +1,74 @@
+.ds-skeleton {
+  display: block;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background-color: var(--fill-tertiary);
+  background-image: linear-gradient(
+    100deg,
+    transparent 20%,
+    color-mix(in srgb, var(--bg-primary) 70%, transparent) 50%,
+    transparent 80%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  animation: ds-skeleton-shimmer 1.4s var(--ease-standard) infinite;
+}
+
+.ds-skeleton-text {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.ds-skeleton-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Fade skeleton screens in so very fast loads don't flicker. */
+.ds-skeleton-screen {
+  animation: ds-skeleton-fade 240ms var(--ease-standard) both;
+}
+
+@keyframes ds-skeleton-shimmer {
+  from { background-position: 120% 0; }
+  to { background-position: -120% 0; }
+}
+
+@keyframes ds-skeleton-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-skeleton { animation: none; background-image: none; }
+  .ds-skeleton-screen { animation: none; }
+}
+
+/* Remote images shimmer until their bytes arrive; the loaded image paints over this background. */
+.podium__bg,
+.project-card__tile img,
+.project-detail__images img,
+.student-profile__images img {
+  background-color: var(--fill-tertiary);
+  background-image: linear-gradient(
+    100deg,
+    transparent 20%,
+    color-mix(in srgb, var(--bg-primary) 70%, transparent) 50%,
+    transparent 80%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  animation: ds-skeleton-shimmer 1.4s var(--ease-standard) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .podium__bg,
+  .project-card__tile img,
+  .project-detail__images img,
+  .student-profile__images img { animation: none; background-image: none; }
+}

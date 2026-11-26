@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Button, Card, ShareButton, ShareCard, Textarea } from '../components'
+import { Button, Card, ProjectDetailSkeleton, ShareButton, ShareCard, Textarea } from '../components'
 import { api } from '../lib/api'
 import { useAuth } from '../lib/auth'
 import { relativeTime } from '../lib/format'
@@ -56,11 +56,7 @@ export function ProjectDetail() {
   }
 
   if (!project) {
-    return (
-      <Card>
-        <p style={{ margin: 0, color: 'var(--label-secondary)' }}>Loading…</p>
-      </Card>
-    )
+    return <ProjectDetailSkeleton />
   }
 
   const isOwner = !!user && user.id === project.studentId
