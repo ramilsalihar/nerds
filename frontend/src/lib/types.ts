@@ -33,8 +33,6 @@ export interface Project {
   deployed: boolean
   usersCount: number
   revenueAmount: string
-  uiUxRating: number
-  functionalityRating: number
   likeCount: number
   createdAt: string
   updatedAt: string

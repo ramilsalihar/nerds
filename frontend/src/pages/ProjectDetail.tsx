@@ -110,8 +110,6 @@ export function ProjectDetail() {
             <Metric label="Score" value={project.score} />
             <Metric label="Users" value={project.usersCount} />
             <Metric label="Revenue" value={`$${Number(project.revenueAmount).toLocaleString()}`} />
-            <Metric label="UI/UX" value={`${project.uiUxRating}/5`} />
-            <Metric label="Functionality" value={`${project.functionalityRating}/5`} />
             <Metric label="Likes" value={project.likeCount} />
           </div>
         </Card>

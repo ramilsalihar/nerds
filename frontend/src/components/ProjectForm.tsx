@@ -34,8 +34,6 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
   const [deployed, setDeployed] = useState(project?.deployed ?? false)
   const [usersCount, setUsersCount] = useState(String(project?.usersCount ?? 0))
   const [revenueAmount, setRevenueAmount] = useState(String(project?.revenueAmount ?? 0))
-  const [uiUxRating, setUiUxRating] = useState(String(project?.uiUxRating ?? 0))
-  const [functionalityRating, setFunctionalityRating] = useState(String(project?.functionalityRating ?? 0))
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -55,10 +53,8 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
         type,
         usersCount: Number(usersCount),
         revenueAmount: Number(revenueAmount),
-        // Ratings and deployment status are set by an admin only.
-        ...(isAdmin
-          ? { deployed, uiUxRating: Number(uiUxRating), functionalityRating: Number(functionalityRating) }
-          : {}),
+        // Deployment status is confirmed by an admin only.
+        ...(isAdmin ? { deployed } : {}),
       }
       const result = isEdit
         ? await api<Project>(`/projects/${project!.id}`, { method: 'PATCH', token, body })
@@ -75,8 +71,6 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
         setDeployed(false)
         setUsersCount('0')
         setRevenueAmount('0')
-        setUiUxRating('0')
-        setFunctionalityRating('0')
       }
     } catch (err) {
       setError((err as Error).message)
@@ -115,8 +109,8 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
         </select>
         <p className="project-form__hint">
           {type === 'startup'
-            ? 'Scored on traction: users and revenue weigh most.'
-            : 'Client work: scored on UI/UX, functionality and what the client paid. Users count is not scored.'}
+            ? 'Scored on traction: users and revenue. Startup revenue counts 10× — it is much harder to earn.'
+            : 'Client work: scored on what the client paid. Users count is not scored.'}
         </p>
       </div>
       <TextField id="title" label="Title" required value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -160,34 +154,11 @@ export function ProjectForm({ students, project, lockStudent = false, onSuccess,
           onChange={(e) => setRevenueAmount(e.target.value)}
         />
       </div>
-      {isAdmin ? (
-        <div className="project-form__row">
-          <TextField
-            id="uiUxRating"
-            label="UI/UX rating (0-5)"
-            type="number"
-            min={0}
-            max={5}
-            step="0.1"
-            value={uiUxRating}
-            onChange={(e) => setUiUxRating(e.target.value)}
-          />
-          <TextField
-            id="functionalityRating"
-            label="Functionality rating (0-5)"
-            type="number"
-            min={0}
-            max={5}
-            step="0.1"
-            value={functionalityRating}
-            onChange={(e) => setFunctionalityRating(e.target.value)}
-          />
-        </div>
-      ) : (
+      {!isAdmin && (
         <p className="project-form__hint">
           {isEdit
-            ? `Set by an admin: UI/UX ${project!.uiUxRating} · Functionality ${project!.functionalityRating} · ${project!.deployed ? 'Deployed' : 'Not deployed'}`
-            : 'An admin will rate UI/UX and functionality and mark the project as deployed.'}
+            ? `Set by an admin: ${project!.deployed ? 'Deployed' : 'Not deployed'}`
+            : 'An admin will mark the project as deployed.'}
         </p>
       )}
       {error && <p className="project-form__error">{error}</p>}

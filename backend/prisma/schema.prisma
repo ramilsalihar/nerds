@@ -67,6 +67,7 @@ model Project {
 
   usersCount         Int     @default(0)
   revenueAmount      Decimal @default(0) @db.Decimal(12, 2)
+  // Unused since ratings left the score; kept so existing values aren't lost. Safe to drop in a later migration.
   uiUxRating         Float   @default(0)
   functionalityRating Float  @default(0)
   likeCount          Int     @default(0)
