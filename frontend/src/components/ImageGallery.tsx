@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import './ImageGallery.css'
 
@@ -12,6 +12,7 @@ interface ImageGalleryProps {
 export function ImageGallery({ images, alt, className }: ImageGalleryProps) {
   const [open, setOpen] = useState<number | null>(null)
   const count = images.length
+  const touchX = useRef<number | null>(null)
 
   const close = useCallback(() => setOpen(null), [])
   const step = useCallback(
@@ -55,7 +56,22 @@ export function ImageGallery({ images, alt, className }: ImageGalleryProps) {
 
       {open !== null &&
         createPortal(
-          <div className="lightbox" role="dialog" aria-modal="true" aria-label={alt} onClick={close}>
+          <div
+            className="lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={alt}
+            onClick={close}
+            onTouchStart={(e) => {
+              touchX.current = e.touches[0].clientX
+            }}
+            onTouchEnd={(e) => {
+              if (touchX.current === null || count < 2) return
+              const dx = e.changedTouches[0].clientX - touchX.current
+              touchX.current = null
+              if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1)
+            }}
+          >
             <img
               className="lightbox__img"
               src={images[open]}
